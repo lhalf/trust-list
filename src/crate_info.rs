@@ -54,6 +54,7 @@ impl CratesIOClient {
                 .context("response contained invalid characters")?,
         )
             .context("failed to deserialize response as json")?;
+
         Ok(crate_info._crate)
     }
 }

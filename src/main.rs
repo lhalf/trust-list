@@ -1,5 +1,6 @@
 use anyhow::Error;
 use clap::Parser;
+use pbr::ProgressBar;
 
 mod cargo_tree;
 mod crate_info;
@@ -32,7 +33,23 @@ fn main() {
 fn generate_table(user_agent: String, output_file: String) -> Result<(), Error> {
     let client = crate_info::CratesIOClient::with_user_agent(user_agent)?;
 
-    md_table::write(output_file, vec![client.get("anyhow".to_string())?])?;
+    let crate_names = cargo_tree::crate_names(1)?;
+
+    let mut progress = ProgressBar::new(crate_names.len() as u64);
+    progress.format("╢▌▌░╟");
+
+    let mut crates = vec![];
+
+    for crate_name in crate_names {
+        progress.message(&format!("{} ", crate_name));
+        crates.push(client.get(crate_name)?);
+        progress.inc();
+        std::thread::sleep(std::time::Duration::from_millis(800));
+    }
+
+    md_table::write(&output_file, crates)?;
+
+    progress.finish_print(&format!("{}.md", output_file));
 
     Ok(())
 }

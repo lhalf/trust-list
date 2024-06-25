@@ -3,10 +3,12 @@ use std::process::Command;
 use anyhow::{Context, Error};
 use itertools::Itertools;
 
-pub fn crate_names() -> Result<Vec<String>, Error> {
+pub fn crate_names(depth: u8) -> Result<Vec<String>, Error> {
     let output = Command::new("cargo")
         .args([
             "tree",
+            "--depth",
+            &depth.to_string(),
             "--format",
             "{lib}",
             "--prefix",
