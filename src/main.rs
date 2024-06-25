@@ -10,7 +10,7 @@ mod md_table;
 #[command(version, about, long_about = None)]
 struct Args {
     /// Output file (.md)
-    #[arg(short, long, default_value_t = String::from("dependencies"))]
+    #[arg(short, long, default_value_t = String::from("trust-list"))]
     output_file: String,
 
     /// GitHub API Token
@@ -25,12 +25,12 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    if let Err(error) = generate_table(args.user_agent, args.output_file) {
+    if let Err(error) = generate_trust_list(args.user_agent, args.output_file) {
         panic!("failed to generate trust list: {}", error)
     }
 }
 
-fn generate_table(user_agent: String, output_file: String) -> Result<(), Error> {
+fn generate_trust_list(user_agent: String, output_file: String) -> Result<(), Error> {
     let client = crate_info::CratesIOClient::with_user_agent(user_agent)?;
 
     let crate_names = cargo_tree::crate_names(1)?;
