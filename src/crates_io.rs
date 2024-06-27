@@ -3,6 +3,7 @@ use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
 const API_URL: &str = "https://crates.io/api/v1/crates/";
+pub const API_INTERVAL: std::time::Duration = std::time::Duration::from_millis(800);
 
 pub struct CratesIOClient {
     client: reqwest::blocking::Client,
@@ -53,7 +54,7 @@ impl CratesIOClient {
                 .text_with_charset("utf-8")
                 .context("response contained invalid characters")?,
         )
-        .context("failed to deserialize response as json")?;
+            .context("failed to deserialize response as json")?;
 
         Ok(crate_info._crate)
     }

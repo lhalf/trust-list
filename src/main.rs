@@ -5,7 +5,7 @@ use pbr::ProgressBar;
 use output_file::OutputFile;
 
 mod cargo_tree;
-mod crate_info;
+mod crates_io;
 mod output_file;
 
 #[derive(Parser, Debug)]
@@ -24,12 +24,12 @@ fn main() {
     let args = Args::parse();
 
     if let Err(error) = generate_trust_list(args.user_agent, args.output_file) {
-        panic!("failed to generate trust list: {}", error)
+        panic!("failed to generate trust list: {:?}", error)
     }
 }
 
 fn generate_trust_list(user_agent: String, output_file: String) -> Result<(), Error> {
-    let client = crate_info::CratesIOClient::with_user_agent(user_agent)?;
+    let client = crates_io::CratesIOClient::with_user_agent(user_agent)?;
 
     let crate_names = cargo_tree::crate_names(1)?;
 
@@ -42,7 +42,7 @@ fn generate_trust_list(user_agent: String, output_file: String) -> Result<(), Er
         progress.message(&format!("{} ", crate_name));
         crates.push(client.get(crate_name)?);
         progress.inc();
-        std::thread::sleep(std::time::Duration::from_millis(800));
+        std::thread::sleep(crates_io::API_INTERVAL);
     }
 
     OutputFile::at_path(&output_file).write_md_table(crates)?;

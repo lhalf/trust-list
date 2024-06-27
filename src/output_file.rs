@@ -2,7 +2,7 @@ use std::io::Write;
 
 use anyhow::{Context, Error};
 
-use crate::crate_info::Crate;
+use crate::crates_io::Crate;
 
 pub struct OutputFile {
     path: String,
@@ -10,7 +10,9 @@ pub struct OutputFile {
 
 impl OutputFile {
     pub fn at_path(path: &str) -> Self {
-        Self { path: path.to_string() }
+        Self {
+            path: path.to_string(),
+        }
     }
 
     pub fn exists(&self) -> bool {
