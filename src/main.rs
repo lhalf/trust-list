@@ -2,9 +2,11 @@ use anyhow::Error;
 use clap::Parser;
 use pbr::ProgressBar;
 
+use output_file::OutputFile;
+
 mod cargo_tree;
 mod crate_info;
-mod md_table;
+mod output_file;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -13,11 +15,7 @@ struct Args {
     #[arg(short, long, default_value_t = String::from("trust-list"))]
     output_file: String,
 
-    /// GitHub API Token
-    #[arg(short, long, default_value_t = String::from(""))]
-    api_token: String,
-
-    /// Crates.io user agent
+    /// Crates.io user agent (name surname (example@email.com))
     #[arg(short, long)]
     user_agent: String,
 }
@@ -47,7 +45,7 @@ fn generate_trust_list(user_agent: String, output_file: String) -> Result<(), Er
         std::thread::sleep(std::time::Duration::from_millis(800));
     }
 
-    md_table::write(&output_file, crates)?;
+    OutputFile::at_path(&output_file).write_md_table(crates)?;
 
     progress.finish_print(&format!("{}.md", output_file));
 

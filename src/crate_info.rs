@@ -53,7 +53,7 @@ impl CratesIOClient {
                 .text_with_charset("utf-8")
                 .context("response contained invalid characters")?,
         )
-            .context("failed to deserialize response as json")?;
+        .context("failed to deserialize response as json")?;
 
         Ok(crate_info._crate)
     }
