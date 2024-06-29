@@ -33,6 +33,13 @@ fn generate_trust_list(user_agent: String, output_filename: String) -> Result<()
     let output_file = OutputFile::at_path(&output_filename);
     let crate_names = cargo_tree::crate_names(1)?;
 
+    if let Ok(existing_crate_names) = output_file.crates_from_md_table() {
+        if existing_crate_names.len() == crate_names.len() {
+            println!("no extra packages to get info for - done!");
+            return Ok(());
+        }
+    }
+
     let mut progress = ProgressBar::new(crate_names.len() as u64);
     progress.format("╢▌▌░╟");
 

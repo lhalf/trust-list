@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use std::io::Write;
 
 use anyhow::{Context, Error};
@@ -40,7 +41,7 @@ impl OutputFile {
         std::fs::File::create(&self.path).context("could not create file")
     }
 
-    pub fn crates_from_md_table(&self) -> Result<Vec<String>, Error> {
+    pub fn crates_from_md_table(&self) -> Result<HashSet<String>, Error> {
         if !self.exists() {
             return Err(anyhow::anyhow!("file does not exist"));
         }
@@ -53,7 +54,7 @@ impl OutputFile {
             .map(|line| line.split("|").skip(1).take(1).collect::<Vec<&str>>())
             .flatten()
             .map(|crate_name| crate_name.trim().to_string())
-            .collect::<Vec<String>>())
+            .collect())
     }
 }
 
