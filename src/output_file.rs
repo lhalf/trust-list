@@ -37,18 +37,30 @@ impl OutputFile {
     }
 
     fn recreate(&self) -> Result<std::fs::File, Error> {
-        std::fs::File::create(format!("{}.md", self.path)).context("could not create file")
+        std::fs::File::create(&self.path).context("could not create file")
     }
 
-    pub fn crates_from_md_table(&self) -> Result<Vec<Crate>, Error> {
-        Ok(vec![])
+    pub fn crates_from_md_table(&self) -> Result<Vec<String>, Error> {
+        if !self.exists() {
+            return Err(anyhow::anyhow!("file does not exist"));
+        }
+
+        let contents = std::fs::read_to_string(&self.path).context("failed to open file")?;
+
+        Ok(contents
+            .split("\n")
+            .skip(2)
+            .map(|line| line.split("|").skip(1).take(1).collect::<Vec<&str>>())
+            .flatten()
+            .map(|crate_name| crate_name.trim().to_string())
+            .collect::<Vec<String>>())
     }
 }
 
 impl Crate {
     fn table_heading() -> String {
         // how to do?
-        "|name|downloads|created|last_updated|link|\n".to_string()
+        "|crate|downloads|created|last_updated|link|\n".to_string()
     }
 
     fn table_gap() -> String {

@@ -2,7 +2,7 @@ use anyhow::Error;
 use clap::Parser;
 use pbr::ProgressBar;
 
-use output_file::OutputFile;
+use crate::output_file::OutputFile;
 
 mod cargo_tree;
 mod crates_io;
@@ -23,14 +23,14 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    if let Err(error) = generate_trust_list(args.user_agent, args.output_file) {
+    if let Err(error) = generate_trust_list(args.user_agent, format!("{}.md", args.output_file)) {
         panic!("failed to generate trust list: {:?}", error)
     }
 }
 
-fn generate_trust_list(user_agent: String, output_file: String) -> Result<(), Error> {
+fn generate_trust_list(user_agent: String, output_filename: String) -> Result<(), Error> {
     let client = crates_io::CratesIOClient::with_user_agent(user_agent)?;
-
+    let output_file = OutputFile::at_path(&output_filename);
     let crate_names = cargo_tree::crate_names(1)?;
 
     let mut progress = ProgressBar::new(crate_names.len() as u64);
@@ -45,9 +45,11 @@ fn generate_trust_list(user_agent: String, output_file: String) -> Result<(), Er
         std::thread::sleep(crates_io::API_INTERVAL);
     }
 
-    OutputFile::at_path(&output_file).write_md_table(crates)?;
+    output_file.write_md_table(crates)?;
 
-    progress.finish_print(&format!("{}.md", output_file));
+    progress.finish_print(&output_filename);
+
+    let _ = dbg!(output_file.crates_from_md_table());
 
     Ok(())
 }
