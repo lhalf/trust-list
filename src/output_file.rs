@@ -6,7 +6,7 @@ use anyhow::{Context, Error};
 use crate::crates_io::Crate;
 
 pub struct OutputFile {
-    path: String,
+    pub path: String,
 }
 
 impl OutputFile {
@@ -20,14 +20,20 @@ impl OutputFile {
         std::path::Path::new(&self.path).exists()
     }
 
-    pub fn write_md_table(&self, crates: Vec<Crate>) -> Result<(), Error> {
-        let mut file = self.recreate()?;
+    pub fn write_headings(&self) -> Result<(), Error> {
+        let mut file = self.open_file_to_append()?;
 
         file.write_all(Crate::table_heading().as_bytes())
             .expect("unable to write");
 
         file.write_all(Crate::table_gap().as_bytes())
             .expect("unable to write");
+
+        Ok(())
+    }
+
+    pub fn write_md_table(&self, crates: Vec<Crate>) -> Result<(), Error> {
+        let mut file = self.open_file_to_append()?;
 
         for _crate in crates {
             file.write_all(_crate.table_entry().as_bytes())
@@ -37,11 +43,33 @@ impl OutputFile {
         Ok(())
     }
 
-    fn recreate(&self) -> Result<std::fs::File, Error> {
+    pub fn open_file_to_append(&self) -> Result<std::fs::File, Error> {
+        std::fs::OpenOptions::new()
+            .write(true)
+            .append(true)
+            .open(&self.path)
+            .context("file does not exist")
+    }
+
+    pub fn recreate(&self) -> Result<std::fs::File, Error> {
         std::fs::File::create(&self.path).context("could not create file")
     }
 
-    pub fn crates_from_md_table(&self) -> Result<HashSet<String>, Error> {
+    pub fn get_unchecked_crates(
+        &self,
+        all_crates: &HashSet<String>,
+    ) -> Result<HashSet<String>, Error> {
+        Ok(all_crates
+            .difference(
+                &self
+                    .crates_from_md_table()
+                    .context("failed to get existing crates")?,
+            )
+            .cloned()
+            .collect())
+    }
+
+    fn crates_from_md_table(&self) -> Result<HashSet<String>, Error> {
         if !self.exists() {
             return Err(anyhow::anyhow!("file does not exist"));
         }

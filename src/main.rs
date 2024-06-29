@@ -1,7 +1,11 @@
+use std::collections::HashSet;
+use std::io::Stdout;
+
 use anyhow::Error;
 use clap::Parser;
 use pbr::ProgressBar;
 
+use crate::crates_io::{Crate, CratesIOClient};
 use crate::output_file::OutputFile;
 
 mod cargo_tree;
@@ -18,45 +22,98 @@ struct Args {
     /// Crates.io user agent (name surname (example@email.com))
     #[arg(short, long)]
     user_agent: String,
+
+    /// Recreate table
+    #[arg(short, long)]
+    recreate: bool,
 }
 
 fn main() {
     let args = Args::parse();
 
-    if let Err(error) = generate_trust_list(args.user_agent, format!("{}.md", args.output_file)) {
+    if let Err(error) = generate_trust_list(
+        args.user_agent,
+        format!("{}.md", args.output_file),
+        args.recreate,
+    ) {
         panic!("failed to generate trust list: {:?}", error)
     }
 }
 
-fn generate_trust_list(user_agent: String, output_filename: String) -> Result<(), Error> {
-    let client = crates_io::CratesIOClient::with_user_agent(user_agent)?;
+fn generate_trust_list(
+    user_agent: String,
+    output_filename: String,
+    recreate: bool,
+) -> Result<(), Error> {
     let output_file = OutputFile::at_path(&output_filename);
-    let crate_names = cargo_tree::crate_names(1)?;
+    let crates_to_get = cargo_tree::crate_names(1)?;
+    let client = CratesIOClient::with_user_agent(user_agent)?;
 
-    if let Ok(existing_crate_names) = output_file.crates_from_md_table() {
-        if existing_crate_names.len() == crate_names.len() {
-            println!("no extra packages to get info for - done!");
-            return Ok(());
-        }
+    if recreate || !output_file.exists() {
+        write_new_table(output_file, client, crates_to_get)?;
+    } else {
+        append_to_table(output_file, client, crates_to_get)?;
     }
 
-    let mut progress = ProgressBar::new(crate_names.len() as u64);
+    Ok(())
+}
+
+fn write_new_table(
+    output_file: OutputFile,
+    client: CratesIOClient,
+    crates_to_get: HashSet<String>,
+) -> Result<(), Error> {
+    let mut progress = ProgressBar::new(crates_to_get.len() as u64);
     progress.format("╢▌▌░╟");
 
-    let mut crates = vec![];
+    let crates = get_crate_info(client, crates_to_get, &mut progress)?;
 
-    for crate_name in crate_names {
-        progress.message(&format!("{} ", crate_name));
-        crates.push(client.get(crate_name)?);
-        progress.inc();
-        std::thread::sleep(crates_io::API_INTERVAL);
+    output_file.recreate()?;
+    output_file.write_headings()?;
+    output_file.write_md_table(crates)?;
+
+    progress.finish_print(&output_file.path);
+
+    Ok(())
+}
+
+fn append_to_table(
+    output_file: OutputFile,
+    client: CratesIOClient,
+    crates_to_get: HashSet<String>,
+) -> Result<(), Error> {
+    let unchecked_crates = output_file.get_unchecked_crates(&crates_to_get)?;
+
+    if unchecked_crates.is_empty() {
+        println!("got all crates already");
+        return Ok(());
     }
+
+    let mut progress = ProgressBar::new(unchecked_crates.len() as u64);
+    progress.format("╢▌▌░╟");
+
+    let crates = get_crate_info(client, unchecked_crates, &mut progress)?;
 
     output_file.write_md_table(crates)?;
 
-    progress.finish_print(&output_filename);
-
-    let _ = dbg!(output_file.crates_from_md_table());
+    progress.finish_print(&output_file.path);
 
     Ok(())
+}
+
+fn get_crate_info(
+    client: CratesIOClient,
+    crates_to_get: HashSet<String>,
+    progress_bar: &mut ProgressBar<Stdout>,
+) -> Result<Vec<Crate>, Error> {
+    let mut crates = vec![];
+
+    for crate_name in crates_to_get {
+        progress_bar.message(&format!("{} ", crate_name));
+        crates.push(client.get(crate_name)?);
+        progress_bar.inc();
+        std::thread::sleep(crates_io::API_INTERVAL);
+    }
+
+    Ok(crates)
 }
