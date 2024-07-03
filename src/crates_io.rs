@@ -23,6 +23,7 @@ pub struct Crate {
     pub name: String,
     pub updated_at: DateTime<Utc>,
     pub repository: String,
+    pub versions: Vec<u64>,
 }
 
 impl CratesIOClient {
@@ -54,7 +55,7 @@ impl CratesIOClient {
                 .text_with_charset("utf-8")
                 .context("response contained invalid characters")?,
         )
-        .context("failed to deserialize response as json")?;
+            .context("failed to deserialize response as json")?;
 
         Ok(crate_info._crate)
     }

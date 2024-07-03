@@ -89,19 +89,20 @@ impl OutputFile {
 impl Crate {
     fn table_heading() -> String {
         // how to do?
-        "|crate|downloads|created|last_updated|link|\n".to_string()
+        "|crate|downloads|releases|created|last updated|link|\n".to_string()
     }
 
     fn table_gap() -> String {
         // also how to do?
-        "|-|-|-|-|-|\n".to_string()
+        "|-|-|-|-|-|-|\n".to_string()
     }
 
     fn table_entry(&self) -> String {
         format!(
-            "|{}|{}|{}|{}|{}|\n",
+            "|{}|{}|{}|{}|{}|{}|\n",
             self.name,
             self.downloads,
+            self.versions.len(),
             self.created_at.format("%d/%m/%Y"),
             self.updated_at.format("%d/%m/%Y"),
             self.repository
