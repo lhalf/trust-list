@@ -26,30 +26,26 @@ struct Args {
     /// Recreate table
     #[arg(short, long)]
     recreate: bool,
+
+    /// Dependency depth
+    #[arg(short, long)]
+    depth: Option<u8>,
 }
 
 fn main() {
     let args = Args::parse();
 
-    if let Err(error) = generate_trust_list(
-        args.user_agent,
-        format!("{}.md", args.output_file),
-        args.recreate,
-    ) {
+    if let Err(error) = generate_trust_list(args) {
         panic!("failed to generate trust list: {:?}", error)
     }
 }
 
-fn generate_trust_list(
-    user_agent: String,
-    output_filename: String,
-    recreate: bool,
-) -> Result<(), Error> {
-    let output_file = OutputFile::at_path(&output_filename);
-    let crates_to_get = cargo_tree::crate_names(1)?;
-    let client = CratesIOClient::with_user_agent(user_agent)?;
+fn generate_trust_list(args: Args) -> Result<(), Error> {
+    let output_file = OutputFile::at_path(&format!("{}.md", args.output_file));
+    let crates_to_get = cargo_tree::crate_names(args.depth)?;
+    let client = CratesIOClient::with_user_agent(args.user_agent)?;
 
-    if recreate || !output_file.exists() {
+    if args.recreate || !output_file.exists() {
         write_new_table(output_file, client, crates_to_get)?;
     } else {
         append_to_table(output_file, client, crates_to_get)?;
