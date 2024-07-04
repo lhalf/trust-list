@@ -23,3 +23,5 @@ Generates:
 | reqwest    | 113431643 | 96       | 16/10/2016 | 17/06/2024   | https://github.com/seanmonstar/reqwest      |
 | serde      | 326491497 | 290      | 05/12/2014 | 25/05/2024   | https://github.com/serde-rs/serde           |
 | serde_json | 280576475 | 152      | 07/08/2015 | 01/07/2024   | https://github.com/serde-rs/json            |
+
+[crates.io data access policy](https://crates.io/data-access#api)
