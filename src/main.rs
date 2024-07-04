@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::BTreeSet;
 use std::io::Stdout;
 
 use anyhow::Error;
@@ -57,7 +57,7 @@ fn generate_trust_list(args: Args) -> Result<(), Error> {
 fn write_new_table(
     output_file: OutputFile,
     client: CratesIOClient,
-    crates_to_get: HashSet<String>,
+    crates_to_get: BTreeSet<String>,
 ) -> Result<(), Error> {
     let mut progress = ProgressBar::new(crates_to_get.len() as u64);
     progress.format("╢▌▌░╟");
@@ -76,7 +76,7 @@ fn write_new_table(
 fn append_to_table(
     output_file: OutputFile,
     client: CratesIOClient,
-    crates_to_get: HashSet<String>,
+    crates_to_get: BTreeSet<String>,
 ) -> Result<(), Error> {
     let unchecked_crates = output_file.get_unchecked_crates(&crates_to_get)?;
 
@@ -99,7 +99,7 @@ fn append_to_table(
 
 fn get_crate_info(
     client: CratesIOClient,
-    crates_to_get: HashSet<String>,
+    crates_to_get: BTreeSet<String>,
     progress_bar: &mut ProgressBar<Stdout>,
 ) -> Result<Vec<Crate>, Error> {
     let mut crates = vec![];

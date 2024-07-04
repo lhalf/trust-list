@@ -55,7 +55,7 @@ impl CratesIOClient {
                 .text_with_charset("utf-8")
                 .context("response contained invalid characters")?,
         )
-            .context("failed to deserialize response as json")?;
+        .context("failed to deserialize response as json")?;
 
         // crates.io treats - and _ the same, set crate name to cargo tree name
         // so when appending we don't see get the name again

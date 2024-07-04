@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::BTreeSet;
 use std::io::Write;
 
 use anyhow::{Context, Error};
@@ -57,8 +57,8 @@ impl OutputFile {
 
     pub fn get_unchecked_crates(
         &self,
-        all_crates: &HashSet<String>,
-    ) -> Result<HashSet<String>, Error> {
+        all_crates: &BTreeSet<String>,
+    ) -> Result<BTreeSet<String>, Error> {
         Ok(all_crates
             .difference(
                 &self
@@ -69,7 +69,7 @@ impl OutputFile {
             .collect())
     }
 
-    fn crates_from_md_table(&self) -> Result<HashSet<String>, Error> {
+    fn crates_from_md_table(&self) -> Result<BTreeSet<String>, Error> {
         if !self.exists() {
             return Err(anyhow::anyhow!("file does not exist"));
         }
