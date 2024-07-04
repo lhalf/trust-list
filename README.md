@@ -6,10 +6,10 @@ Install:
 `cargo install trust-list`
 
 Usage:
-`cargo trust-list --help`
+`trust-list --help`
 
 Example:
-`cargo trust-list --user-agent "bob example bob@example.com" --depth 1`
+`trust-list --user-agent "bob example bob@example.com" --depth 1`
 
 Generates:
 | crate      | downloads | releases | created    | last updated | link                                        |
