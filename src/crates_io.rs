@@ -39,26 +39,30 @@ impl CratesIOClient {
     }
 
     pub fn get(&self, crate_name: String) -> Result<Crate, Error> {
+        let url = format!("{}{}", self.url, crate_name);
+
         let request = self
             .client
-            .get(format!("{}{}", self.url, crate_name))
+            .get(&url)
             .build()
             .with_context(|| format!("failed to build request for crate: {}", crate_name))?;
 
         let response = self
             .client
             .execute(request)
-            .context("failed to send request")?;
+            .with_context(|| format!("failed to send request to: {}", url))?
+            .error_for_status()
+            .with_context(|| format!("invalid response from: {}", url))?;
 
         let mut crate_info: CrateInfo = serde_json::from_str(
             &response
                 .text_with_charset("utf-8")
                 .context("response contained invalid characters")?,
         )
-            .context("failed to deserialize response as json")?;
+        .with_context(|| format!("failed to deserialize response from: {}", url))?;
 
         // crates.io treats - and _ the same, set crate name to cargo tree name
-        // so when appending we don't see get the name again
+        // so when appending we don't get the name again
         crate_info._crate.name = crate_name;
 
         Ok(crate_info._crate)

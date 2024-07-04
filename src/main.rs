@@ -106,7 +106,10 @@ fn get_crate_info(
 
     for crate_name in crates_to_get {
         progress_bar.message(&format!("{} ", crate_name));
-        crates.push(client.get(crate_name)?);
+        // currently ignore crates we can't find
+        if let Ok(crate_info) = client.get(crate_name) {
+            crates.push(crate_info)
+        }
         progress_bar.inc();
         std::thread::sleep(crates_io::API_INTERVAL);
     }

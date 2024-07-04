@@ -33,9 +33,10 @@ fn validate_output(stdout: Vec<u8>) -> Result<String, Error> {
 
 fn to_crate_names(output: String) -> BTreeSet<String> {
     output
-        .trim()
         .split("\n")
+        .skip(1) // removes own library name from output
         .unique()
+        .filter(|crate_name| !crate_name.is_empty())
         .sorted()
         .map(String::from)
         .collect()
