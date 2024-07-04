@@ -1,7 +1,13 @@
 [package]
-name = "trust-list-rs"
+name = "trust-list"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+keywords = ["trust", "dependencies", "cargo-subcommand"]
+readme = "README.md"
+description = "Tool to automatically generate dependency information tables in markdown"
+homepage = "https://github.com/lhalf/trust-list-rs"
+repository = "https://github.com/lhalf/trust-list-rs"
 
 [dependencies]
 clap = { version = "4.5", features = ["derive"] }
