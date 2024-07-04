@@ -5,7 +5,7 @@ edition = "2021"
 license = "MIT"
 keywords = ["trust", "dependencies", "cargo-subcommand", "tool"]
 readme = "README.md"
-description = "Command line tool for automatically generatin dependency information tables in markdown"
+description = "Command line tool for automatically generating dependency information tables in markdown"
 homepage = "https://github.com/lhalf/trust-list-rs"
 repository = "https://github.com/lhalf/trust-list-rs"
 
