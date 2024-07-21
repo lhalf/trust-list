@@ -1,5 +1,8 @@
 # trust-list-rs
 
+[![crates.io](https://img.shields.io/crates/v/reqwest.svg)](https://crates.io/crates/trust-list)
+[![MIT](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
+
 Command line tool for automatically generating a trust list of your dependencies.
 
 Install:
