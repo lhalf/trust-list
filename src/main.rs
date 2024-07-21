@@ -23,7 +23,7 @@ struct Args {
     #[arg(short, long)]
     user_agent: String,
 
-    /// Recreate table
+    /// Recreate table (appends new dependencies by default)
     #[arg(short, long)]
     recreate: bool,
 
