@@ -5,16 +5,15 @@
 
 Command line tool for automatically generating a trust list of your dependencies.
 
-Install:
+## Install
 `cargo install trust-list`
 
-Usage:
+## Usage
 `trust-list --help`
 
-Example:
+## Example
 `trust-list --user-agent "bob example bob@example.com" --depth 1`
 
-Generates:
 | crate | downloads | releases | created | last updated | link |
 |------------|-----------|----------|------------|--------------|---------------------------------------------|
 | anyhow | 192866405 | 88 | 05/10/2019 | 18/05/2024 | https://github.com/dtolnay/anyhow           |
