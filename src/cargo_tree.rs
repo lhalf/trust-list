@@ -41,3 +41,27 @@ fn to_crate_names(output: String) -> BTreeSet<String> {
         .map(String::from)
         .collect()
 }
+
+#[cfg(test)]
+mod test {
+    use std::collections::BTreeSet;
+
+    use super::crate_names;
+
+    #[test]
+    fn cargo_tree_depth_1() {
+        // could get this from cargo.toml?
+        let expected_crates = BTreeSet::from([
+            "anyhow".to_string(),
+            "chrono".to_string(),
+            "clap".to_string(),
+            "itertools".to_string(),
+            "log".to_string(),
+            "pbr".to_string(),
+            "reqwest".to_string(),
+            "serde".to_string(),
+            "serde_json".to_string(),
+        ]);
+        assert_eq!(expected_crates, crate_names(Some(1)).unwrap());
+    }
+}
