@@ -45,7 +45,6 @@ impl OutputFile {
 
     pub fn open_file_to_append(&self) -> Result<std::fs::File, Error> {
         std::fs::OpenOptions::new()
-            .write(true)
             .append(true)
             .open(&self.path)
             .context("file does not exist")
@@ -77,10 +76,9 @@ impl OutputFile {
         let contents = std::fs::read_to_string(&self.path).context("failed to open file")?;
 
         Ok(contents
-            .split("\n")
+            .split('\n')
             .skip(2)
-            .map(|line| line.split("|").skip(1).take(1).collect::<Vec<&str>>())
-            .flatten()
+            .flat_map(|line| line.split('|').skip(1).take(1).collect::<Vec<&str>>())
             .map(|crate_name| crate_name.trim().to_string())
             .collect())
     }

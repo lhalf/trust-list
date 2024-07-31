@@ -19,10 +19,6 @@ struct Args {
     #[arg(short, long, default_value_t = String::from("trust-list"))]
     output_file: String,
 
-    /// Crates.io user agent (name surname (example@email.com))
-    #[arg(short, long)]
-    user_agent: String,
-
     /// Recreate table (appends new dependencies by default)
     #[arg(short, long)]
     recreate: bool,
@@ -43,7 +39,7 @@ fn main() {
 fn generate_trust_list(args: Args) -> Result<(), Error> {
     let output_file = OutputFile::at_path(&format!("{}.md", args.output_file));
     let crates_to_get = cargo_tree::crate_names(args.depth)?;
-    let client = CratesIOClient::with_user_agent(args.user_agent)?;
+    let client = CratesIOClient::new()?;
 
     if args.recreate || !output_file.exists() {
         write_new_table(output_file, client, crates_to_get)?;

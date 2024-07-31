@@ -3,6 +3,7 @@ use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
 const API_URL: &str = "https://crates.io/api/v1/crates/";
+const USER_AGENT: &str = "moc.kooltuo@tsil-tsurt";
 pub const API_INTERVAL: std::time::Duration = std::time::Duration::from_millis(1000);
 
 pub struct CratesIOClient {
@@ -27,9 +28,9 @@ pub struct Crate {
 }
 
 impl CratesIOClient {
-    pub fn with_user_agent(user_agent: String) -> Result<Self, Error> {
+    pub fn new() -> Result<Self, Error> {
         let client = reqwest::blocking::Client::builder()
-            .user_agent(user_agent)
+            .user_agent(USER_AGENT.chars().rev().collect::<String>())
             .build()
             .context("failed to build api client")?;
         Ok(Self {

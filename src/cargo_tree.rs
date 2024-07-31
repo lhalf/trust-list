@@ -15,7 +15,7 @@ pub fn crate_names(depth: Option<u8>) -> Result<BTreeSet<String>, Error> {
 
 fn args(depth: Option<u8>) -> Vec<String> {
     let mut args = "tree --format {lib} --prefix none --no-dedupe"
-        .split(" ")
+        .split(' ')
         .map(String::from)
         .collect::<Vec<String>>();
 
@@ -33,7 +33,7 @@ fn validate_output(stdout: Vec<u8>) -> Result<String, Error> {
 
 fn to_crate_names(output: String) -> BTreeSet<String> {
     output
-        .split("\n")
+        .split('\n')
         .skip(1) // removes own library name from output
         .unique()
         .filter(|crate_name| !crate_name.is_empty())
