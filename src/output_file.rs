@@ -32,18 +32,14 @@ impl OutputFile {
         Ok(())
     }
 
-    pub fn write_md_table(&self, crates: Vec<Crate>) -> Result<(), Error> {
+    pub fn write_row(&self, _crate: Crate) -> Result<(), Error> {
         let mut file = self.open_file_to_append()?;
 
-        for _crate in crates {
-            file.write_all(_crate.table_entry().as_bytes())
-                .expect("unable to write");
-        }
-
-        Ok(())
+        file.write_all(_crate.table_entry().as_bytes())
+            .with_context(|| format!("failed to write info for {} to file", _crate.name))
     }
 
-    pub fn open_file_to_append(&self) -> Result<std::fs::File, Error> {
+    fn open_file_to_append(&self) -> Result<std::fs::File, Error> {
         std::fs::OpenOptions::new()
             .append(true)
             .open(&self.path)

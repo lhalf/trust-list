@@ -1,11 +1,10 @@
 use std::collections::BTreeSet;
-use std::io::Stdout;
 
 use anyhow::Error;
 use clap::Parser;
 use pbr::ProgressBar;
 
-use crate::crates_io::{Crate, CratesIOClient};
+use crate::crates_io::CratesIOClient;
 use crate::output_file::OutputFile;
 
 mod cargo_tree;
@@ -38,33 +37,22 @@ fn main() {
 
 fn generate_trust_list(args: Args) -> Result<(), Error> {
     let output_file = OutputFile::at_path(&format!("{}.md", args.output_file));
-    let crates_to_get = cargo_tree::crate_names(args.depth)?;
+    let mut crates_to_get = cargo_tree::crate_names(args.depth)?;
     let client = CratesIOClient::new()?;
 
     if args.recreate || !output_file.exists() {
-        write_new_table(output_file, client, crates_to_get)?;
+        output_file.recreate()?;
+        output_file.write_headings()?;
     } else {
-        append_to_table(output_file, client, crates_to_get)?;
+        crates_to_get = output_file.get_unchecked_crates(&crates_to_get)?;
     }
 
-    Ok(())
-}
+    if crates_to_get.is_empty() {
+        println!("{}", output_file.path);
+        return Ok(());
+    }
 
-fn write_new_table(
-    output_file: OutputFile,
-    client: CratesIOClient,
-    crates_to_get: BTreeSet<String>,
-) -> Result<(), Error> {
-    let mut progress = ProgressBar::new(crates_to_get.len() as u64);
-    progress.format("╢▌▌░╟");
-
-    let crates = get_crate_info(client, crates_to_get, &mut progress)?;
-
-    output_file.recreate()?;
-    output_file.write_headings()?;
-    output_file.write_md_table(crates)?;
-
-    progress.finish_print(&output_file.path);
+    append_to_table(output_file, client, crates_to_get)?;
 
     Ok(())
 }
@@ -74,41 +62,27 @@ fn append_to_table(
     client: CratesIOClient,
     crates_to_get: BTreeSet<String>,
 ) -> Result<(), Error> {
-    let unchecked_crates = output_file.get_unchecked_crates(&crates_to_get)?;
+    let mut progress = progress_bar(crates_to_get.len() as u64);
 
-    if unchecked_crates.is_empty() {
-        println!("got all crates already");
-        return Ok(());
+    for crate_name in crates_to_get {
+        progress.message(&format!("{:width$}", crate_name, width = 30));
+        // currently ignore crates we can't find
+        if let Ok(crate_info) = client.get(crate_name) {
+            output_file.write_row(crate_info)?;
+            progress.inc();
+            std::thread::sleep(crates_io::API_INTERVAL);
+        }
     }
-
-    let mut progress = ProgressBar::new(unchecked_crates.len() as u64);
-    progress.format("╢▌▌░╟");
-
-    let crates = get_crate_info(client, unchecked_crates, &mut progress)?;
-
-    output_file.write_md_table(crates)?;
 
     progress.finish_print(&output_file.path);
 
     Ok(())
 }
 
-fn get_crate_info(
-    client: CratesIOClient,
-    crates_to_get: BTreeSet<String>,
-    progress_bar: &mut ProgressBar<Stdout>,
-) -> Result<Vec<Crate>, Error> {
-    let mut crates = vec![];
-
-    for crate_name in crates_to_get {
-        progress_bar.message(&format!("{} ", crate_name));
-        // currently ignore crates we can't find
-        if let Ok(crate_info) = client.get(crate_name) {
-            crates.push(crate_info)
-        }
-        progress_bar.inc();
-        std::thread::sleep(crates_io::API_INTERVAL);
-    }
-
-    Ok(crates)
+fn progress_bar(length: u64) -> ProgressBar<std::io::Stdout> {
+    let mut progress = ProgressBar::new(length);
+    progress.format("╢▌▌░╟");
+    progress.show_speed = false;
+    progress.show_percent = false;
+    progress
 }
