@@ -63,10 +63,7 @@ impl CratesIOClient {
 
         crate_info._crate.reverse_dependencies = self
             .get_reverse_dependencies(&crate_name)
-            .with_context(|| format!(
-                "failed to get reverse dependencies for {}",
-                crate_name
-            ))?;
+            .with_context(|| format!("failed to get reverse dependencies for {}", crate_name))?;
 
         Ok(crate_info._crate)
     }

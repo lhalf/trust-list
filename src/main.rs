@@ -70,7 +70,7 @@ fn append_to_table(
         // currently ignore crates we can't find
         match client.get_crate_info(crate_name) {
             Ok(crate_info) => output_file.write_row(crate_info)?,
-            Err(error) => progress.message(&format!("{} ", error.to_string())),
+            Err(error) => progress.message(&format!("{} ", error)),
         }
 
         progress.inc();
