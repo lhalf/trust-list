@@ -1,14 +1,10 @@
-use std::collections::BTreeSet;
-
-use anyhow::Error;
 use clap::Parser;
-use pbr::ProgressBar;
 
-use crate::crates_io::CratesIOClient;
-use crate::output_file::OutputFile;
+use crate::generate_list::generate_list;
 
 mod cargo_tree;
 mod crates_io;
+mod generate_list;
 mod output_file;
 
 #[derive(Parser, Debug)]
@@ -30,61 +26,7 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    if let Err(error) = generate_trust_list(args) {
+    if let Err(error) = generate_list(args) {
         panic!("failed to generate trust list: {:?}", error)
     }
-}
-
-fn generate_trust_list(args: Args) -> Result<(), Error> {
-    let output_file = OutputFile::at_path(&format!("{}.md", args.output_file));
-    let mut crates_to_get = cargo_tree::crate_names(args.depth)?;
-    let client = CratesIOClient::new()?;
-
-    if args.recreate || !output_file.exists() {
-        output_file.recreate()?;
-        output_file.write_headings()?;
-    } else {
-        crates_to_get = output_file.get_unchecked_crates(&crates_to_get)?;
-    }
-
-    if crates_to_get.is_empty() {
-        println!("{}", output_file.path);
-        return Ok(());
-    }
-
-    append_to_table(output_file, client, crates_to_get)?;
-
-    Ok(())
-}
-
-fn append_to_table(
-    output_file: OutputFile,
-    client: CratesIOClient,
-    crates_to_get: BTreeSet<String>,
-) -> Result<(), Error> {
-    let mut progress = progress_bar(crates_to_get.len() as u64);
-
-    for crate_name in crates_to_get {
-        progress.message(&format!("{:width$}", crate_name, width = 30));
-
-        // currently ignore crates we can't find
-        match client.get_crate_info(crate_name) {
-            Ok(crate_info) => output_file.write_row(crate_info)?,
-            Err(error) => progress.message(&format!("{} ", error)),
-        }
-
-        progress.inc();
-    }
-
-    progress.finish_print(&output_file.path);
-
-    Ok(())
-}
-
-fn progress_bar(length: u64) -> ProgressBar<std::io::Stdout> {
-    let mut progress = ProgressBar::new(length);
-    progress.format("╢▌▌░╟");
-    progress.show_speed = false;
-    progress.show_percent = false;
-    progress
 }
