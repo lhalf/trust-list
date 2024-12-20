@@ -3,9 +3,9 @@ use std::collections::BTreeSet;
 use anyhow::Error;
 use pbr::ProgressBar;
 
+use crate::{Args, cargo_tree};
 use crate::crates_io::CratesIOClient;
 use crate::output_file::OutputFile;
-use crate::{cargo_tree, Args};
 
 pub fn generate_list(args: Args) -> Result<(), Error> {
     let output_file = OutputFile::at_path(&format!("{}.md", args.output_file));
