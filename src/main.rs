@@ -6,6 +6,7 @@ mod cargo_tree;
 mod crates_io;
 mod generate_list;
 mod github;
+mod http_client;
 mod output_file;
 
 #[derive(Parser, Debug)]
