@@ -5,6 +5,7 @@ use pbr::ProgressBar;
 
 use crate::{Args, cargo_tree};
 use crate::crates_io::get_crate_info;
+use crate::github::get_contributor_count;
 use crate::http_client::HTTPClient;
 use crate::output_file::OutputFile;
 
@@ -41,9 +42,9 @@ fn append_list(
         progress.message(&format!("{:width$}", crate_name, width = 30));
 
         // currently ignore crates we can't find
-        match get_crate_info(&client, crate_name) {
-            Ok(crate_info) => output_file.write_row(crate_info)?,
-            Err(error) => progress.message(&format!("{} ", error)),
+        if let Ok(mut crate_info) = get_crate_info(&client, crate_name) {
+            crate_info.contributors = get_contributor_count(&client, &crate_info.repository)?;
+            output_file.write_row(crate_info)?;
         }
 
         progress.inc();

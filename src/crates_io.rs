@@ -23,6 +23,8 @@ pub struct Crate {
     pub versions: Vec<u64>,
     #[serde(skip)]
     pub reverse_dependencies: u64,
+    #[serde(skip)]
+    pub contributors: u16,
 }
 
 #[derive(Deserialize, Debug)]

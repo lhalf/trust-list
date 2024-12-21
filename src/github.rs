@@ -2,9 +2,9 @@ use anyhow::{Context, Error};
 
 use crate::http_client::HTTPClient;
 
-const API_BASE_URL: &str = "https://api.github.com/repos/";
+const API_BASE_URL: &str = "https://api.github.com/repos";
 
-pub fn get_contributor_count(client: &HTTPClient, repo_url: String) -> Result<u16, Error> {
+pub fn get_contributor_count(client: &HTTPClient, repo_url: &str) -> Result<u16, Error> {
     let owner_and_name = match repo_url.strip_prefix("https://github.com/") {
         None => {
             return Err(anyhow::anyhow!(
