@@ -1353,7 +1353,6 @@ dependencies = [
  "chrono",
  "clap",
  "itertools",
- "log",
  "pbr",
  "reqwest",
  "serde",

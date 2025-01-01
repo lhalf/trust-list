@@ -56,7 +56,6 @@ mod test {
             "chrono".to_string(),
             "clap".to_string(),
             "itertools".to_string(),
-            "log".to_string(),
             "pbr".to_string(),
             "reqwest".to_string(),
             "serde".to_string(),
