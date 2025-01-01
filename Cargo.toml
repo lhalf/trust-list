@@ -10,11 +10,11 @@ homepage = "https://github.com/lhalf/trust-list-rs"
 repository = "https://github.com/lhalf/trust-list-rs"
 
 [dependencies]
-clap = { version = "4.5", features = ["derive"] }
-anyhow = "1.0"
-itertools = "0.13"
-reqwest = { version = "0.12.5", features = ["blocking"] }
-serde_json = "1.0.117"
-serde = { version = "1.0.203", features = ["derive"] }
-chrono = { version = "0.4", features = ["serde"] }
-pbr = "1.1.1"
+clap = { version = "*", features = ["derive"] }
+anyhow = "*"
+itertools = "*"
+reqwest = { version = "*", features = ["blocking"] }
+serde_json = "*"
+serde = { version = "*", features = ["derive"] }
+chrono = { version = "*", features = ["serde"] }
+pbr = "*"
