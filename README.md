@@ -3,7 +3,7 @@
 [![crates.io](https://img.shields.io/crates/v/trust-list)](https://crates.io/crates/trust-list)
 [![MIT](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
 
-Command line tool for automatically generating a trust list of your dependencies.
+Command line tool for generating a trust list of your dependencies.
 
 ## Install
 
