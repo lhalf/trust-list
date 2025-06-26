@@ -1,7 +1,7 @@
 [package]
 name = "trust-list"
 version = "0.1.5"
-edition = "2021"
+edition = "2024"
 license = "MIT"
 keywords = ["trust", "dependencies", "cargo-subcommand", "tool"]
 readme = "README.md"
@@ -10,11 +10,11 @@ homepage = "https://github.com/lhalf/trust-list-rs"
 repository = "https://github.com/lhalf/trust-list-rs"
 
 [dependencies]
-clap = { version = "4.5.23", features = ["derive"] }
-anyhow = "1.0.95"
-itertools = "0.14.0"
-reqwest = { version = "0.12.12", features = ["blocking"] }
-serde_json = "1.0.134"
-serde = { version = "1.0.217", features = ["derive"] }
-chrono = { version = "0.4.39", features = ["serde"] }
-pbr = "1.1.1"
+clap = { version = "4.5.40", default-features = false, features = ["std", "derive"] }
+anyhow = { version = "1.0.98", default-features = false }
+itertools = { version = "0.14.0", default-features = false, features = ["use_std"] }
+reqwest = { version = "0.12.20", default-features = false, features = ["blocking", "charset"] }
+serde_json = { version = "1.0.140", default-features = false, features = ["std"] }
+serde = { version = "1.0.217", default-features = false, features = ["derive"] }
+chrono = { version = "0.4.39", default-features = false, features = ["serde", "std"] }
+pbr = { version = "1.1.1", default-features = false }
