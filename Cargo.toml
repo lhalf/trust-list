@@ -9,7 +9,7 @@ categories = ["command-line-interface"]
 readme = "README.md"
 homepage = "https://github.com/lhalf/trust-list-rs"
 repository = "https://github.com/lhalf/trust-list-rs"
-exclude = [".gitignore"]
+exclude = [".gitignore", "justfile", "/.github"]
 
 [dependencies]
 clap = { version = "4.5.40", default-features = false, features = ["std", "derive"] }
