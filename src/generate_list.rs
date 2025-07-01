@@ -1,42 +1,35 @@
-use anyhow::{Context, Error};
+use anyhow::Error;
 use std::collections::BTreeSet;
-use std::io::Write;
-use std::path::PathBuf;
 
 use crate::cargo_tree;
 use crate::crates_io::{Crate, get_crate_info};
+use crate::file_io::FileIO;
 use crate::github::get_contributor_count;
 use crate::http_client::HTTPClient;
 
-pub fn generate_list(filename: String, recreate: bool, depth: Option<u8>) -> Result<(), Error> {
-    let output_filepath = PathBuf::from(format!("{filename}.md"));
-
+pub fn generate_list(
+    recreate: bool,
+    depth: Option<u8>,
+    output_file: impl FileIO,
+) -> Result<(), Error> {
     let mut crates_to_get = cargo_tree::crate_names(depth)?;
 
     let client = HTTPClient::new()?;
 
-    if recreate || !output_filepath.exists() {
-        std::fs::File::create(&output_filepath).context("could not create file")?;
+    if recreate || !output_file.exists() {
+        output_file.create()?;
 
-        let mut file = std::fs::OpenOptions::new()
-            .append(true)
-            .open(&output_filepath)
-            .context("file does not exist")?;
-
-        file.write_all(Crate::table_heading().as_bytes())
-            .context("unable to write to output file")?;
-
-        file.write_all(Crate::table_divider().as_bytes())
-            .context("unable to write to output file")?;
+        output_file.append(Crate::table_heading().as_bytes())?;
+        output_file.append(Crate::table_divider().as_bytes())?;
     } else {
-        if !output_filepath.exists() {
+        if !output_file.exists() {
             return Err(anyhow::anyhow!("output file does not exist"));
         }
 
         crates_to_get = crates_to_get
             .difference(
-                &std::fs::read_to_string(&output_filepath)
-                    .context("failed to open output file")?
+                &output_file
+                    .read_to_string()?
                     .split('\n')
                     .skip(2)
                     .flat_map(|line| line.split('|').skip(1).take(1).collect::<Vec<&str>>())
@@ -48,7 +41,6 @@ pub fn generate_list(filename: String, recreate: bool, depth: Option<u8>) -> Res
     }
 
     if crates_to_get.is_empty() {
-        println!("{:?}", output_filepath);
         return Ok(());
     }
 
@@ -57,15 +49,7 @@ pub fn generate_list(filename: String, recreate: bool, depth: Option<u8>) -> Res
             Ok(mut crate_info) => {
                 crate_info.contributors = get_contributor_count(&client, &crate_info.repository)?;
 
-                let mut file = std::fs::OpenOptions::new()
-                    .append(true)
-                    .open(&output_filepath)
-                    .context("file does not exist")?;
-
-                file.write_all(crate_info.table_entry().as_bytes())
-                    .with_context(|| {
-                        format!("failed to write info for {} to file", crate_info.name)
-                    })?;
+                output_file.append(crate_info.table_entry().as_bytes())?;
 
                 println!("{}", crate_name);
             }

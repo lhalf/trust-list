@@ -1,9 +1,11 @@
-use clap::Parser;
-
+use crate::file_io::OutputFile;
 use crate::generate_list::generate_list;
+use clap::Parser;
+use std::path::PathBuf;
 
 mod cargo_tree;
 mod crates_io;
+mod file_io;
 mod generate_list;
 mod github;
 mod http_client;
@@ -27,7 +29,9 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    if let Err(error) = generate_list(args.output_file, args.recreate, args.depth) {
+    let output_file = OutputFile::at(PathBuf::from(format!("{}.md", args.output_file)));
+
+    if let Err(error) = generate_list(args.recreate, args.depth, output_file) {
         panic!("failed to generate trust list: {:?}", error)
     }
 }
