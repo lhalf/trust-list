@@ -37,7 +37,7 @@ struct Meta {
     total: u64,
 }
 
-pub fn get_crate_info(client: &HTTPClient, crate_name: String) -> Result<Crate, Error> {
+pub fn get_crate_info(client: &HTTPClient, crate_name: &str) -> Result<Crate, Error> {
     std::thread::sleep(API_INTERVAL);
 
     let url = format!("{}/{}", API_URL, &crate_name);
@@ -47,7 +47,7 @@ pub fn get_crate_info(client: &HTTPClient, crate_name: String) -> Result<Crate, 
 
     // crates.io treats - and _ the same, set crate name to cargo tree name
     // so when appending we don't get the name again
-    crate_info._crate.name = crate_name.clone();
+    crate_info._crate.name = crate_name.to_string();
 
     crate_info._crate.reverse_dependencies = get_reverse_dependencies(client, &crate_name)
         .with_context(|| format!("failed to get reverse dependencies for {}", crate_name))?;
@@ -65,4 +65,3 @@ fn get_reverse_dependencies(client: &HTTPClient, crate_name: &str) -> Result<u64
 
     Ok(reverse_dependencies.meta.total)
 }
-

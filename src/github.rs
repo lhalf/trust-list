@@ -8,8 +8,8 @@ pub fn get_contributor_count(client: &HTTPClient, repo_url: &str) -> Result<u16,
     let owner_and_name = match repo_url.strip_prefix("https://github.com/") {
         None => {
             return Err(anyhow::anyhow!(
-                    "could not extract owner and name from repository url"
-                ))
+                "could not extract owner and name from repository url"
+            ));
         }
         Some(owner_and_name) => owner_and_name,
     };
@@ -24,4 +24,3 @@ pub fn get_contributor_count(client: &HTTPClient, repo_url: &str) -> Result<u16,
         None => Ok(0),
     }
 }
-

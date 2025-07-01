@@ -1,13 +1,10 @@
-use std::collections::BTreeSet;
-
 use anyhow::Error;
-use pbr::ProgressBar;
 
-use crate::{Args, cargo_tree};
 use crate::crates_io::get_crate_info;
 use crate::github::get_contributor_count;
 use crate::http_client::HTTPClient;
 use crate::output_file::OutputFile;
+use crate::{Args, cargo_tree};
 
 pub fn generate_list(args: Args) -> Result<(), Error> {
     let output_file = OutputFile::at_path(&format!("{}.md", args.output_file));
@@ -26,39 +23,18 @@ pub fn generate_list(args: Args) -> Result<(), Error> {
         return Ok(());
     }
 
-    append_list(output_file, client, crates_to_get)?;
-
-    Ok(())
-}
-
-fn append_list(
-    output_file: OutputFile,
-    client: HTTPClient,
-    crates_to_get: BTreeSet<String>,
-) -> Result<(), Error> {
-    let mut progress = progress_bar(crates_to_get.len() as u64);
-
     for crate_name in crates_to_get {
-        progress.message(&format!("{:width$}", crate_name, width = 30));
-
-        // currently ignore crates we can't find
-        if let Ok(mut crate_info) = get_crate_info(&client, crate_name) {
-            crate_info.contributors = get_contributor_count(&client, &crate_info.repository)?;
-            output_file.write_row(crate_info)?;
+        match get_crate_info(&client, &crate_name) {
+            Ok(mut crate_info) => {
+                crate_info.contributors = get_contributor_count(&client, &crate_info.repository)?;
+                output_file.write_row(crate_info)?;
+                println!("{}", crate_name);
+            }
+            Err(_) => {
+                println!("failed to get crate info for: {}", crate_name);
+            }
         }
-
-        progress.inc();
     }
 
-    progress.finish_print(&output_file.path);
-
     Ok(())
-}
-
-fn progress_bar(length: u64) -> ProgressBar<std::io::Stdout> {
-    let mut progress = ProgressBar::new(length);
-    progress.format("╢▌▌░╟");
-    progress.show_speed = false;
-    progress.show_percent = false;
-    progress
 }

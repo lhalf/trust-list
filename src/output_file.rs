@@ -83,7 +83,8 @@ impl OutputFile {
 impl Crate {
     fn table_heading() -> String {
         // how to do?
-        "|crate|downloads|contributors|reverse dependencies|releases|created|last updated|link|\n".to_string()
+        "|crate|downloads|contributors|reverse dependencies|releases|created|last updated|link|\n"
+            .to_string()
     }
 
     fn table_gap() -> String {
