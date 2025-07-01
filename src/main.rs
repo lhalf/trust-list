@@ -12,7 +12,7 @@ mod output_file;
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
-    /// Output file (.md)
+    /// The output filename (appended with .md)
     #[arg(short, long, default_value_t = String::from("trust-list"))]
     output_file: String,
 
@@ -20,7 +20,7 @@ struct Args {
     #[arg(short, long)]
     recreate: bool,
 
-    /// Dependency depth
+    /// The depth of dependencies to collect information on (all sub-dependencies by default)
     #[arg(short, long)]
     depth: Option<u8>,
 }
@@ -28,7 +28,7 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    if let Err(error) = generate_list(args) {
+    if let Err(error) = generate_list(args.output_file, args.recreate, args.depth) {
         panic!("failed to generate trust list: {:?}", error)
     }
 }

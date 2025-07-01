@@ -1,17 +1,17 @@
 use anyhow::Error;
 
+use crate::cargo_tree;
 use crate::crates_io::get_crate_info;
 use crate::github::get_contributor_count;
 use crate::http_client::HTTPClient;
 use crate::output_file::OutputFile;
-use crate::{Args, cargo_tree};
 
-pub fn generate_list(args: Args) -> Result<(), Error> {
-    let output_file = OutputFile::at_path(&format!("{}.md", args.output_file));
-    let mut crates_to_get = cargo_tree::crate_names(args.depth)?;
+pub fn generate_list(filename: String, recreate: bool, depth: Option<u8>) -> Result<(), Error> {
+    let output_file = OutputFile::at_path(&format!("{}.md", filename));
+    let mut crates_to_get = cargo_tree::crate_names(depth)?;
     let client = HTTPClient::new()?;
 
-    if args.recreate || !output_file.exists() {
+    if recreate || !output_file.exists() {
         output_file.recreate()?;
         output_file.write_headings()?;
     } else {
