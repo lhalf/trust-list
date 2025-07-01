@@ -8,6 +8,7 @@ mod generate_list;
 mod github;
 mod http_client;
 mod output_file;
+mod output_file_new;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
