@@ -6,7 +6,7 @@ use itertools::Itertools;
 
 pub fn crate_names(depth: Option<u8>) -> Result<BTreeSet<String>, Error> {
     let output = Command::new("cargo")
-        .args(&args(depth))
+        .args(args(depth))
         .output()
         .context("failed to call cargo tree")?;
 

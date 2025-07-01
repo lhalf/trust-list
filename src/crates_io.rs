@@ -29,9 +29,30 @@ pub struct Crate {
 }
 
 impl Crate {
-    const NUM_FIELDS: usize = Self::FIELDS.len();
-    pub fn fields() -> [&'static str; Self::NUM_FIELDS] {
-        Self::FIELDS
+    pub fn table_heading() -> String {
+        ["|", &Self::FIELDS.join("|"), "|\n"].join("")
+    }
+
+    pub fn table_divider() -> String {
+        ["|", &vec!["-"; Self::FIELDS.len()].join("|"), "|\n"].join("")
+    }
+
+    pub fn table_entry(&self) -> String {
+        format!(
+            "|{}|{}|{}|{}|{}|{}|{}|{}|\n",
+            self.name,
+            self.downloads,
+            if self.contributors == 30 {
+                "30+".to_string()
+            } else {
+                self.contributors.to_string()
+            },
+            self.reverse_dependencies,
+            self.versions.len(),
+            self.created_at.format("%d/%m/%Y"),
+            self.updated_at.format("%d/%m/%Y"),
+            self.repository
+        )
     }
 }
 
@@ -57,7 +78,7 @@ pub fn get_crate_info(client: &HTTPClient, crate_name: &str) -> Result<Crate, Er
     // so when appending we don't get the name again
     crate_info._crate.name = crate_name.to_string();
 
-    crate_info._crate.reverse_dependencies = get_reverse_dependencies(client, &crate_name)
+    crate_info._crate.reverse_dependencies = get_reverse_dependencies(client, crate_name)
         .with_context(|| format!("failed to get reverse dependencies for {}", crate_name))?;
 
     Ok(crate_info._crate)
@@ -72,4 +93,22 @@ fn get_reverse_dependencies(client: &HTTPClient, crate_name: &str) -> Result<u64
         .with_context(|| format!("failed to deserialize response from: {}", url))?;
 
     Ok(reverse_dependencies.meta.total)
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::crates_io::Crate;
+
+    #[test]
+    fn crate_produces_expected_table_headings() {
+        assert_eq!(
+            "|name|downloads|contributors|reverse_dependencies|versions|created_at|updated_at|repository|\n",
+            Crate::table_heading()
+        )
+    }
+
+    #[test]
+    fn crate_produces_expected_table_divider() {
+        assert_eq!("|-|-|-|-|-|-|-|-|\n", Crate::table_divider())
+    }
 }

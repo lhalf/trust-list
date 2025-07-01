@@ -26,7 +26,7 @@ impl OutputFile {
         file.write_all(Crate::table_heading().as_bytes())
             .expect("unable to write");
 
-        file.write_all(Crate::table_gap().as_bytes())
+        file.write_all(Crate::table_divider().as_bytes())
             .expect("unable to write");
 
         Ok(())
@@ -77,36 +77,5 @@ impl OutputFile {
             .flat_map(|line| line.split('|').skip(1).take(1).collect::<Vec<&str>>())
             .map(|crate_name| crate_name.trim().to_string())
             .collect())
-    }
-}
-
-impl Crate {
-    fn table_heading() -> String {
-        // how to do?
-        "|crate|downloads|contributors|reverse dependencies|releases|created|last updated|link|\n"
-            .to_string()
-    }
-
-    fn table_gap() -> String {
-        // also how to do?
-        "|-|-|-|-|-|-|-|-|\n".to_string()
-    }
-
-    fn table_entry(&self) -> String {
-        format!(
-            "|{}|{}|{}|{}|{}|{}|{}|{}|\n",
-            self.name,
-            self.downloads,
-            if self.contributors == 30 {
-                "30+".to_string()
-            } else {
-                self.contributors.to_string()
-            },
-            self.reverse_dependencies,
-            self.versions.len(),
-            self.created_at.format("%d/%m/%Y"),
-            self.updated_at.format("%d/%m/%Y"),
-            self.repository
-        )
     }
 }
