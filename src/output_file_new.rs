@@ -1,15 +1,17 @@
+use crate::crates_io::Crate;
 use std::collections::BTreeSet;
 
 pub fn crates_from_output_file(_file_contents: Vec<u8>) -> anyhow::Result<BTreeSet<String>> {
     Err(anyhow::anyhow!("invalid headings in trust list"))
 }
 
+fn headings() -> String {
+    Crate::fields().join("|")
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::output_file_new::crates_from_output_file;
-
-    const VALID_HEADERS: &[u8] =
-        b"|crate|downloads|contributors|reverse dependencies|releases|created|last updated|link|";
+    use crate::output_file_new::{crates_from_output_file, headings};
 
     #[test]
     fn empty_output_file_is_invalid() {
@@ -37,10 +39,17 @@ mod tests {
     fn output_file_with_invalid_divider_is_invalid() {
         assert_eq!(
             "invalid headings in trust list",
-            crates_from_output_file(VALID_HEADERS.iter().chain(b"\n-|-").copied().collect())
-                .unwrap_err()
-                .root_cause()
-                .to_string()
+            crates_from_output_file(
+                headings()
+                    .as_bytes()
+                    .iter()
+                    .chain(b"\n-|-")
+                    .copied()
+                    .collect()
+            )
+            .unwrap_err()
+            .root_cause()
+            .to_string()
         )
     }
 }

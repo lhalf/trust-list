@@ -1,5 +1,6 @@
 use anyhow::{Context, Error};
 use chrono::{DateTime, Utc};
+use field_names::FieldNames;
 use serde::Deserialize;
 
 use crate::http_client::HTTPClient;
@@ -13,7 +14,7 @@ pub struct CrateInfo {
     _crate: Crate,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, FieldNames)]
 pub struct Crate {
     pub name: String,
     pub downloads: u64,
@@ -25,6 +26,13 @@ pub struct Crate {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub repository: String,
+}
+
+impl Crate {
+    const NUM_FIELDS: usize = Self::FIELDS.len();
+    pub fn fields() -> [&'static str; Self::NUM_FIELDS] {
+        Self::FIELDS
+    }
 }
 
 #[derive(Deserialize, Debug)]

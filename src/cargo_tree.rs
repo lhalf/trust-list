@@ -55,6 +55,7 @@ mod test {
             "anyhow".to_string(),
             "chrono".to_string(),
             "clap".to_string(),
+            "field_names".to_string(),
             "itertools".to_string(),
             "reqwest".to_string(),
             "serde".to_string(),
