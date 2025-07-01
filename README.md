@@ -1,6 +1,7 @@
 # trust-list-rs
 
 [![crates.io](https://img.shields.io/crates/v/trust-list)](https://crates.io/crates/trust-list)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/lhalf/trust-list-rs/on_commit.yml)
 [![MIT](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
 
 Command line tool for generating a trust list of your dependencies.
