@@ -15,16 +15,16 @@ pub struct CrateInfo {
 
 #[derive(Deserialize, Debug)]
 pub struct Crate {
-    pub created_at: DateTime<Utc>,
-    pub downloads: u64,
     pub name: String,
-    pub updated_at: DateTime<Utc>,
-    pub repository: String,
-    pub versions: Vec<u64>,
-    #[serde(skip)]
-    pub reverse_dependencies: u64,
+    pub downloads: u64,
     #[serde(skip)]
     pub contributors: u16,
+    #[serde(skip)]
+    pub reverse_dependencies: u64,
+    pub versions: Vec<u64>,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+    pub repository: String,
 }
 
 #[derive(Deserialize, Debug)]
