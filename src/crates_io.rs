@@ -85,7 +85,7 @@ pub fn get_crate_info(client: &HTTPClient, crate_name: &str) -> Result<Crate, Er
 }
 
 fn get_reverse_dependencies(client: &HTTPClient, crate_name: &str) -> Result<u64, Error> {
-    let url = dbg!(format!("{}/{}/reverse_dependencies", API_URL, crate_name));
+    let url = format!("{}/{}/reverse_dependencies", API_URL, crate_name);
 
     let reverse_dependencies: ReverseDependencies = serde_json::from_str(&client.get(&url)?)
         .with_context(|| format!("failed to deserialize response from: {}", url))?;
