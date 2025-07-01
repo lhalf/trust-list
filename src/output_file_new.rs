@@ -8,6 +8,9 @@ pub fn crates_from_output_file(_file_contents: Vec<u8>) -> anyhow::Result<BTreeS
 mod tests {
     use crate::output_file_new::crates_from_output_file;
 
+    const VALID_HEADERS: &[u8] =
+        b"|crate|downloads|contributors|reverse dependencies|releases|created|last updated|link|";
+
     #[test]
     fn empty_output_file_is_invalid() {
         assert_eq!(
@@ -24,6 +27,17 @@ mod tests {
         assert_eq!(
             "invalid headings in trust list",
             crates_from_output_file(b"not|correct|headings".to_vec())
+                .unwrap_err()
+                .root_cause()
+                .to_string()
+        )
+    }
+
+    #[test]
+    fn output_file_with_invalid_divider_is_invalid() {
+        assert_eq!(
+            "invalid headings in trust list",
+            crates_from_output_file(VALID_HEADERS.iter().chain(b"\n-|-").copied().collect())
                 .unwrap_err()
                 .root_cause()
                 .to_string()
