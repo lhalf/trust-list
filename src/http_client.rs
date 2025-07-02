@@ -3,6 +3,7 @@ use reqwest::blocking::Client;
 
 pub const USER_AGENT: &str = "moc.kooltuo@tsil-tsurt";
 
+#[cfg_attr(test, autospy::autospy)]
 pub trait GetRequest {
     fn get(&self, url: &str) -> Result<String, anyhow::Error>;
 }

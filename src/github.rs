@@ -23,3 +23,20 @@ pub fn get_contributor_count(http_client: &impl GetRequest, repo_url: &str) -> R
         None => Ok(0),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::github::get_contributor_count;
+    use crate::http_client::GetRequestSpy;
+
+    #[test]
+    fn repo_url_with_invalid_base_url() {
+        assert_eq!(
+            "could not extract owner and name from repository url",
+            get_contributor_count(&GetRequestSpy::default(), "http://invalid/url/user/repo")
+                .unwrap_err()
+                .root_cause()
+                .to_string()
+        )
+    }
+}

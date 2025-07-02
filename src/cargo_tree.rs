@@ -14,7 +14,7 @@ pub fn crate_names(depth: Option<u8>) -> anyhow::Result<BTreeSet<String>> {
 }
 
 fn args(depth: Option<u8>) -> Vec<String> {
-    let mut args = "tree --format {lib} --prefix none --no-dedupe"
+    let mut args = "tree --edges no-dev --format {lib} --prefix none --no-dedupe"
         .split(' ')
         .map(String::from)
         .collect::<Vec<String>>();
