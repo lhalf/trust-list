@@ -29,11 +29,16 @@ struct Args {
 fn main() -> anyhow::Result<()> {
     let args = Args::parse();
 
-    let output_file = OutputFile::at(PathBuf::from(format!("{}.md", args.output_file)));
+    let output_file = OutputFile::new(
+        PathBuf::from(format!("{}.md", args.output_file)),
+        args.recreate,
+    );
+
     let http_client = http_client::build()?;
+
     let crates_names = cargo_tree::crate_names(args.depth)?;
 
-    if let Err(error) = generate_list(args.recreate, crates_names, output_file, http_client) {
+    if let Err(error) = generate_list(crates_names, output_file, http_client) {
         panic!("failed to generate trust list: {:?}", error)
     }
 

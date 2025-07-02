@@ -7,13 +7,18 @@ pub struct OutputFile {
 }
 
 impl OutputFile {
-    pub fn at(path: PathBuf) -> Self {
-        Self { path }
+    pub fn new(path: PathBuf, recreate: bool) -> Self {
+        let file = Self { path };
+        if recreate {
+            file.remove();
+        }
+        file
     }
 }
 
 pub trait FileIO {
     fn exists(&self) -> bool;
+    fn remove(&self);
     fn create(&self) -> anyhow::Result<()>;
     fn append(&self, contents: &[u8]) -> anyhow::Result<()>;
     fn read_to_string(&self) -> anyhow::Result<String>;
@@ -22,6 +27,10 @@ pub trait FileIO {
 impl FileIO for OutputFile {
     fn exists(&self) -> bool {
         self.path.exists()
+    }
+
+    fn remove(&self) {
+        let _ = std::fs::remove_file(&self.path);
     }
 
     fn create(&self) -> anyhow::Result<()> {

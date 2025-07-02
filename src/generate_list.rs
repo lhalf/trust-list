@@ -7,38 +7,28 @@ use crate::github::get_contributor_count;
 use crate::http_client::GetRequest;
 
 pub fn generate_list(
-    recreate: bool,
     mut crate_names: BTreeSet<String>,
     output_file: impl FileIO,
     http_client: impl GetRequest,
 ) -> Result<(), Error> {
-    if recreate || !output_file.exists() {
+    if !output_file.exists() {
         output_file.create()?;
-
         output_file.append(Crate::table_heading().as_bytes())?;
         output_file.append(Crate::table_divider().as_bytes())?;
-    } else {
-        if !output_file.exists() {
-            return Err(anyhow::anyhow!("output file does not exist"));
-        }
-
-        crate_names = crate_names
-            .difference(
-                &output_file
-                    .read_to_string()?
-                    .split('\n')
-                    .skip(2)
-                    .flat_map(|line| line.split('|').skip(1).take(1).collect::<Vec<&str>>())
-                    .map(|crate_name| crate_name.trim().to_string())
-                    .collect::<BTreeSet<String>>(),
-            )
-            .cloned()
-            .collect()
     }
 
-    if crate_names.is_empty() {
-        return Ok(());
-    }
+    crate_names = crate_names
+        .difference(
+            &output_file
+                .read_to_string()?
+                .split('\n')
+                .skip(2)
+                .flat_map(|line| line.split('|').skip(1).take(1).collect::<Vec<&str>>())
+                .map(|crate_name| crate_name.trim().to_string())
+                .collect::<BTreeSet<String>>(),
+        )
+        .cloned()
+        .collect();
 
     for crate_name in crate_names {
         match get_crate_info(&http_client, &crate_name) {
