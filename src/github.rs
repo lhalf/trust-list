@@ -7,9 +7,7 @@ pub fn get_contributor_count(http_client: &impl GetRequest, repo_url: &str) -> R
     let contributors_url = format!(
         "{}/{}/contributors",
         API_BASE_URL,
-        repo_url
-            .strip_prefix("https://github.com/")
-            .context("could not extract owner and name from repository url")?
+        sanitise_repo_url(repo_url)?
     );
 
     match serde_json::from_str::<serde_json::Value>(&http_client.get(&contributors_url)?)
@@ -19,6 +17,16 @@ pub fn get_contributor_count(http_client: &impl GetRequest, repo_url: &str) -> R
         Some(contributors) => Ok(contributors.len() as u16),
         None => Ok(0),
     }
+}
+
+fn sanitise_repo_url(repo_url: &str) -> anyhow::Result<&str> {
+    let mut repo_url = repo_url
+        .strip_prefix("https://github.com/")
+        .context("could not extract owner and name from repository url")?;
+
+    repo_url = repo_url.strip_suffix(".git").unwrap_or(repo_url);
+
+    Ok(repo_url.strip_suffix("/").unwrap_or(repo_url))
 }
 
 #[cfg(test)]
@@ -89,6 +97,30 @@ mod tests {
         assert_eq!(
             5,
             get_contributor_count(&spy, "https://github.com/valid/array").unwrap()
+        )
+    }
+
+    #[test]
+    fn contributor_url_ending_with_git_returning_valid_json_array() {
+        let spy = GetRequestSpy::default();
+
+        spy.get.returns.push_back(Ok(r#"[1,2]"#.to_string()));
+
+        assert_eq!(
+            2,
+            get_contributor_count(&spy, "https://github.com/valid/repo.git").unwrap()
+        )
+    }
+
+    #[test]
+    fn contributor_url_ending_with_slash_returning_valid_json_array() {
+        let spy = GetRequestSpy::default();
+
+        spy.get.returns.push_back(Ok(r#"[1,2,3]"#.to_string()));
+
+        assert_eq!(
+            3,
+            get_contributor_count(&spy, "https://github.com/valid/repo/").unwrap()
         )
     }
 }

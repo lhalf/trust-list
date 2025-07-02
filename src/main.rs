@@ -10,7 +10,7 @@ mod generate_list;
 mod github;
 mod http_client;
 
-#[derive(Parser, Debug)]
+#[derive(Parser)]
 #[command(version, about, long_about = None)]
 struct Args {
     /// The output filename (appended with .md)
@@ -22,8 +22,16 @@ struct Args {
     recreate: bool,
 
     /// The depth of dependencies to collect information on (all sub-dependencies by default)
-    #[arg(short, long)]
+    #[arg(long)]
     depth: Option<u8>,
+
+    /// Include dev dependencies (disabled by default)
+    #[arg(long)]
+    dev: bool,
+
+    /// Include build dependencies (disabled by default)
+    #[arg(long)]
+    build: bool,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -36,7 +44,7 @@ fn main() -> anyhow::Result<()> {
 
     let http_client = http_client::build()?;
 
-    let crates_names = cargo_tree::crate_names(args.depth)?;
+    let crates_names = cargo_tree::crate_names(args.depth, args.dev, args.build)?;
 
     if let Err(error) = generate_list(crates_names, output_file, http_client) {
         panic!("failed to generate trust list: {:?}", error)
