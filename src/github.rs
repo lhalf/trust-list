@@ -35,7 +35,6 @@ mod tests {
             "could not extract owner and name from repository url",
             get_contributor_count(&GetRequestSpy::default(), "http://invalid/url/user/repo")
                 .unwrap_err()
-                .root_cause()
                 .to_string()
         )
     }
@@ -52,7 +51,20 @@ mod tests {
             "deliberate test error",
             get_contributor_count(&spy, "https://github.com/cannot/reach")
                 .unwrap_err()
-                .root_cause()
+                .to_string()
+        )
+    }
+
+    #[test]
+    fn contributor_url_returns_invalid_json() {
+        let spy = GetRequestSpy::default();
+
+        spy.get.returns.push_back(Ok("invalid JSON".to_string()));
+
+        assert_eq!(
+            "failed to deserialize response from: https://api.github.com/repos/invalid/json/contributors",
+            get_contributor_count(&spy, "https://github.com/invalid/json")
+                .unwrap_err()
                 .to_string()
         )
     }
