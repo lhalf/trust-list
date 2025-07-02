@@ -160,4 +160,16 @@ mod tests {
             get_crate_info(&spy, "invalid").unwrap_err().to_string()
         )
     }
+
+    #[test]
+    fn crate_url_returns_invalid_json() {
+        let spy = GetRequestSpy::default();
+
+        spy.get.returns.push_back(Ok("invalid JSON".to_string()));
+
+        assert_eq!(
+            "failed to deserialize response from: https://crates.io/api/v1/crates/invalid",
+            get_crate_info(&spy, "invalid").unwrap_err().to_string()
+        )
+    }
 }
