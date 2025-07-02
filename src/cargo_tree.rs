@@ -1,10 +1,10 @@
 use std::collections::BTreeSet;
 use std::process::Command;
 
-use anyhow::{Context, Error};
+use anyhow::Context;
 use itertools::Itertools;
 
-pub fn crate_names(depth: Option<u8>) -> Result<BTreeSet<String>, Error> {
+pub fn crate_names(depth: Option<u8>) -> anyhow::Result<BTreeSet<String>> {
     let output = Command::new("cargo")
         .args(args(depth))
         .output()
@@ -27,7 +27,7 @@ fn args(depth: Option<u8>) -> Vec<String> {
     args
 }
 
-fn validate_output(stdout: Vec<u8>) -> Result<String, Error> {
+fn validate_output(stdout: Vec<u8>) -> anyhow::Result<String> {
     String::from_utf8(stdout).context("cargo tree output contained invalid utf8")
 }
 

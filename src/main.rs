@@ -1,9 +1,6 @@
 use crate::file_io::OutputFile;
 use crate::generate_list::generate_list;
-use crate::http_client::USER_AGENT;
-use anyhow::Context;
 use clap::Parser;
-use reqwest::blocking::Client;
 use std::path::PathBuf;
 
 mod cargo_tree;
@@ -33,18 +30,12 @@ fn main() -> anyhow::Result<()> {
     let args = Args::parse();
 
     let output_file = OutputFile::at(PathBuf::from(format!("{}.md", args.output_file)));
-    let http_client = build_http_client()?;
+    let http_client = http_client::build()?;
+    let crates_names = cargo_tree::crate_names(args.depth)?;
 
-    if let Err(error) = generate_list(args.recreate, args.depth, output_file, http_client) {
+    if let Err(error) = generate_list(args.recreate, crates_names, output_file, http_client) {
         panic!("failed to generate trust list: {:?}", error)
     }
 
     Ok(())
-}
-
-fn build_http_client() -> Result<Client, anyhow::Error> {
-    Client::builder()
-        .user_agent(USER_AGENT.chars().rev().collect::<String>())
-        .build()
-        .context("failed to build api client")
 }

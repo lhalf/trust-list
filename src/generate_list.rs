@@ -1,7 +1,6 @@
 use anyhow::Error;
 use std::collections::BTreeSet;
 
-use crate::cargo_tree;
 use crate::crates_io::{Crate, get_crate_info};
 use crate::file_io::FileIO;
 use crate::github::get_contributor_count;
@@ -9,12 +8,10 @@ use crate::http_client::GetRequest;
 
 pub fn generate_list(
     recreate: bool,
-    depth: Option<u8>,
+    mut crate_names: BTreeSet<String>,
     output_file: impl FileIO,
     http_client: impl GetRequest,
 ) -> Result<(), Error> {
-    let mut crates_to_get = cargo_tree::crate_names(depth)?;
-
     if recreate || !output_file.exists() {
         output_file.create()?;
 
@@ -25,7 +22,7 @@ pub fn generate_list(
             return Err(anyhow::anyhow!("output file does not exist"));
         }
 
-        crates_to_get = crates_to_get
+        crate_names = crate_names
             .difference(
                 &output_file
                     .read_to_string()?
@@ -39,11 +36,11 @@ pub fn generate_list(
             .collect()
     }
 
-    if crates_to_get.is_empty() {
+    if crate_names.is_empty() {
         return Ok(());
     }
 
-    for crate_name in crates_to_get {
+    for crate_name in crate_names {
         match get_crate_info(&http_client, &crate_name) {
             Ok(mut crate_info) => {
                 crate_info.contributors =

@@ -1,4 +1,5 @@
 use anyhow::Context;
+use reqwest::blocking::Client;
 
 pub const USER_AGENT: &str = "moc.kooltuo@tsil-tsurt";
 
@@ -6,7 +7,7 @@ pub trait GetRequest {
     fn get(&self, url: &str) -> Result<String, anyhow::Error>;
 }
 
-impl GetRequest for reqwest::blocking::Client {
+impl GetRequest for Client {
     fn get(&self, url: &str) -> Result<String, anyhow::Error> {
         let request = self
             .get(url)
@@ -23,4 +24,11 @@ impl GetRequest for reqwest::blocking::Client {
             .text_with_charset("utf-8")
             .with_context(|| format!("response from {} contained invalid characters", url))
     }
+}
+
+pub fn build() -> anyhow::Result<Client> {
+    Client::builder()
+        .user_agent(USER_AGENT.chars().rev().collect::<String>())
+        .build()
+        .context("failed to build api client")
 }
