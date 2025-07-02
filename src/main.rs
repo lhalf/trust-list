@@ -32,7 +32,7 @@ fn main() -> anyhow::Result<()> {
     let output_file = OutputFile::new(
         PathBuf::from(format!("{}.md", args.output_file)),
         args.recreate,
-    );
+    )?;
 
     let http_client = http_client::build()?;
 

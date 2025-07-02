@@ -1,3 +1,4 @@
+use crate::crates_io::Crate;
 use anyhow::Context;
 use std::io::Write;
 use std::path::PathBuf;
@@ -7,12 +8,20 @@ pub struct OutputFile {
 }
 
 impl OutputFile {
-    pub fn new(path: PathBuf, recreate: bool) -> Self {
+    pub fn new(path: PathBuf, recreate: bool) -> Result<Self, anyhow::Error> {
         let file = Self { path };
+
         if recreate {
             file.remove();
         }
-        file
+
+        if !file.exists() {
+            file.create()?;
+            file.append(Crate::table_heading().as_bytes())?;
+            file.append(Crate::table_divider().as_bytes())?;
+        }
+
+        Ok(file)
     }
 }
 
