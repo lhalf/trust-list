@@ -4,16 +4,13 @@ use anyhow::{Context, Error};
 const API_BASE_URL: &str = "https://api.github.com/repos";
 
 pub fn get_contributor_count(http_client: &impl GetRequest, repo_url: &str) -> Result<u16, Error> {
-    let owner_and_name = match repo_url.strip_prefix("https://github.com/") {
-        None => {
-            return Err(anyhow::anyhow!(
-                "could not extract owner and name from repository url"
-            ));
-        }
-        Some(owner_and_name) => owner_and_name,
-    };
-
-    let contributors_url = format!("{}/{}/contributors", API_BASE_URL, owner_and_name);
+    let contributors_url = format!(
+        "{}/{}/contributors",
+        API_BASE_URL,
+        repo_url
+            .strip_prefix("https://github.com/")
+            .context("could not extract owner and name from repository url")?
+    );
 
     match serde_json::from_str::<serde_json::Value>(&http_client.get(&contributors_url)?)
         .with_context(|| format!("failed to deserialize response from: {}", contributors_url))?
@@ -66,6 +63,32 @@ mod tests {
             get_contributor_count(&spy, "https://github.com/invalid/json")
                 .unwrap_err()
                 .to_string()
+        )
+    }
+
+    #[test]
+    fn contributor_url_returning_non_array_json_returns_0_contributors() {
+        let spy = GetRequestSpy::default();
+
+        spy.get.returns.push_back(Ok(
+            r#"{"not_array": 10, "actually_object": 100}"#.to_string()
+        ));
+
+        assert_eq!(
+            0,
+            get_contributor_count(&spy, "https://github.com/not/array").unwrap()
+        )
+    }
+
+    #[test]
+    fn contributor_url_returning_valid_json_array() {
+        let spy = GetRequestSpy::default();
+
+        spy.get.returns.push_back(Ok(r#"[1,2,3,4,5]"#.to_string()));
+
+        assert_eq!(
+            5,
+            get_contributor_count(&spy, "https://github.com/valid/array").unwrap()
         )
     }
 }
