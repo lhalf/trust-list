@@ -5,8 +5,6 @@ use field_names::FieldNames;
 use serde::Deserialize;
 
 const API_URL: &str = "https://crates.io/api/v1/crates";
-const API_INTERVAL: std::time::Duration = std::time::Duration::from_secs(1);
-
 #[derive(Deserialize, Debug)]
 pub struct CrateInfo {
     #[serde(rename = "crate")]
@@ -66,7 +64,9 @@ struct Meta {
 }
 
 pub fn get_crate_info(http_client: &impl GetRequest, crate_name: &str) -> Result<Crate, Error> {
-    std::thread::sleep(API_INTERVAL);
+    // crates.io api policy - https://crates.io/data-access#api
+    #[cfg(not(test))]
+    std::thread::sleep(std::time::Duration::from_secs(1));
 
     let url = format!("{}/{}", API_URL, &crate_name);
 
@@ -95,7 +95,8 @@ fn get_reverse_dependencies(http_client: &impl GetRequest, crate_name: &str) -> 
 
 #[cfg(test)]
 mod tests {
-    use crate::crates_io::Crate;
+    use crate::crates_io::{Crate, get_crate_info};
+    use crate::http_client::GetRequestSpy;
 
     #[test]
     fn crate_produces_expected_table_headings() {
@@ -108,5 +109,19 @@ mod tests {
     #[test]
     fn crate_produces_expected_table_divider() {
         assert_eq!("|-|-|-|-|-|-|-|-|\n", Crate::table_divider())
+    }
+
+    #[test]
+    fn fails_to_reach_crate_url() {
+        let spy = GetRequestSpy::default();
+
+        spy.get
+            .returns
+            .push_back(Err(anyhow::anyhow!("deliberate test error")));
+
+        assert_eq!(
+            "deliberate test error",
+            get_crate_info(&spy, "invalid").unwrap_err().to_string()
+        )
     }
 }
