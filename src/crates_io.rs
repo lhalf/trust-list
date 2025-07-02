@@ -1,9 +1,8 @@
+use crate::http_client::GetRequest;
 use anyhow::{Context, Error};
 use chrono::{DateTime, Utc};
 use field_names::FieldNames;
 use serde::Deserialize;
-
-use crate::http_client::HTTPClient;
 
 const API_URL: &str = "https://crates.io/api/v1/crates";
 const API_INTERVAL: std::time::Duration = std::time::Duration::from_secs(1);
@@ -66,29 +65,30 @@ struct Meta {
     total: u64,
 }
 
-pub fn get_crate_info(client: &HTTPClient, crate_name: &str) -> Result<Crate, Error> {
+pub fn get_crate_info(http_client: &impl GetRequest, crate_name: &str) -> Result<Crate, Error> {
     std::thread::sleep(API_INTERVAL);
 
     let url = format!("{}/{}", API_URL, &crate_name);
 
-    let mut crate_info: CrateInfo = serde_json::from_str(&client.get(&url)?)
+    let mut crate_info: CrateInfo = serde_json::from_str(&http_client.get(&url)?)
         .with_context(|| format!("failed to deserialize response from: {}", url))?;
 
     // crates.io treats - and _ the same, set crate name to cargo tree name
     // so when appending we don't get the name again
     crate_info._crate.name = crate_name.to_string();
 
-    crate_info._crate.reverse_dependencies = get_reverse_dependencies(client, crate_name)
+    crate_info._crate.reverse_dependencies = get_reverse_dependencies(http_client, crate_name)
         .with_context(|| format!("failed to get reverse dependencies for {}", crate_name))?;
 
     Ok(crate_info._crate)
 }
 
-fn get_reverse_dependencies(client: &HTTPClient, crate_name: &str) -> Result<u64, Error> {
+fn get_reverse_dependencies(http_client: &impl GetRequest, crate_name: &str) -> Result<u64, Error> {
     let url = format!("{}/{}/reverse_dependencies", API_URL, crate_name);
 
-    let reverse_dependencies: ReverseDependencies = serde_json::from_str(&client.get(&url)?)
-        .with_context(|| format!("failed to deserialize response from: {}", url))?;
+    let reverse_dependencies: ReverseDependencies =
+        serde_json::from_str(&http_client.get(&url)?)
+            .with_context(|| format!("failed to deserialize response from: {}", url))?;
 
     Ok(reverse_dependencies.meta.total)
 }

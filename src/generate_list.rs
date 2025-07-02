@@ -5,16 +5,15 @@ use crate::cargo_tree;
 use crate::crates_io::{Crate, get_crate_info};
 use crate::file_io::FileIO;
 use crate::github::get_contributor_count;
-use crate::http_client::HTTPClient;
+use crate::http_client::GetRequest;
 
 pub fn generate_list(
     recreate: bool,
     depth: Option<u8>,
     output_file: impl FileIO,
+    http_client: impl GetRequest,
 ) -> Result<(), Error> {
     let mut crates_to_get = cargo_tree::crate_names(depth)?;
-
-    let client = HTTPClient::new()?;
 
     if recreate || !output_file.exists() {
         output_file.create()?;
@@ -45,9 +44,10 @@ pub fn generate_list(
     }
 
     for crate_name in crates_to_get {
-        match get_crate_info(&client, &crate_name) {
+        match get_crate_info(&http_client, &crate_name) {
             Ok(mut crate_info) => {
-                crate_info.contributors = get_contributor_count(&client, &crate_info.repository)?;
+                crate_info.contributors =
+                    get_contributor_count(&http_client, &crate_info.repository)?;
 
                 output_file.append(crate_info.table_entry().as_bytes())?;
 
