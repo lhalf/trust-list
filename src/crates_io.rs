@@ -1,5 +1,5 @@
 use crate::http_client::GetRequest;
-use anyhow::{Context, Error};
+use anyhow::Context;
 use chrono::{DateTime, Utc};
 use field_names::FieldNames;
 use serde::Deserialize;
@@ -63,7 +63,10 @@ struct Meta {
     total: u64,
 }
 
-pub fn get_crate_info(http_client: &impl GetRequest, crate_name: &str) -> Result<Crate, Error> {
+pub fn get_crate_info(
+    http_client: &impl GetRequest,
+    crate_name: &str,
+) -> Result<Crate, anyhow::Error> {
     // crates.io api policy - https://crates.io/data-access#api
     #[cfg(not(test))]
     std::thread::sleep(std::time::Duration::from_secs(1));
@@ -83,7 +86,10 @@ pub fn get_crate_info(http_client: &impl GetRequest, crate_name: &str) -> Result
     Ok(crate_info._crate)
 }
 
-fn get_reverse_dependencies(http_client: &impl GetRequest, crate_name: &str) -> Result<u64, Error> {
+fn get_reverse_dependencies(
+    http_client: &impl GetRequest,
+    crate_name: &str,
+) -> Result<u64, anyhow::Error> {
     let url = format!("{}/{}/reverse_dependencies", API_URL, crate_name);
 
     let reverse_dependencies: ReverseDependencies =
@@ -201,5 +207,16 @@ mod tests {
                 .unwrap_err()
                 .to_string()
         )
+    }
+
+    #[test]
+    fn reverse_dependencies_returns_valid_json() {
+        let spy = GetRequestSpy::default();
+
+        spy.get.returns.push_back(Ok(
+            r#"{ "dependencies": [], "versions": [], "meta": { "total": 32 } }"#.to_string(),
+        ));
+
+        assert_eq!(32, get_reverse_dependencies(&spy, "valid").unwrap())
     }
 }
