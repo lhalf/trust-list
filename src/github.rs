@@ -39,4 +39,21 @@ mod tests {
                 .to_string()
         )
     }
+
+    #[test]
+    fn fails_to_reach_contributor_url() {
+        let spy = GetRequestSpy::default();
+
+        spy.get
+            .returns
+            .push_back(Err(anyhow::anyhow!("deliberate test error")));
+
+        assert_eq!(
+            "deliberate test error",
+            get_contributor_count(&spy, "https://github.com/cannot/reach")
+                .unwrap_err()
+                .root_cause()
+                .to_string()
+        )
+    }
 }
