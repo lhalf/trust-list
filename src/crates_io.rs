@@ -39,7 +39,7 @@ impl Crate {
             "|{}|{}|{}|{}|{}|{}|{}|{}|\n",
             self.name,
             self.downloads,
-            if self.contributors == 30 {
+            if self.contributors >= 30 {
                 "30+".to_string()
             } else {
                 self.contributors.to_string()
@@ -99,7 +99,7 @@ mod tests {
     use crate::http_client::GetRequestSpy;
 
     #[test]
-    fn crate_produces_expected_table_headings() {
+    fn produces_expected_table_headings() {
         assert_eq!(
             "|name|downloads|contributors|reverse_dependencies|versions|created_at|updated_at|repository|\n",
             Crate::table_heading()
@@ -107,18 +107,36 @@ mod tests {
     }
 
     #[test]
-    fn crate_produces_expected_table_divider() {
+    fn produces_expected_table_divider() {
         assert_eq!("|-|-|-|-|-|-|-|-|\n", Crate::table_divider())
     }
 
     #[test]
-    fn crate_produces_expected_table_line() {
+    fn produces_expected_table_line() {
         assert_eq!(
             "|example|100|20|10|2|01/01/1970|01/01/1970|https://github.com/lhalf/trust-list-rs|\n",
             Crate {
                 name: "example".to_string(),
                 downloads: 100,
                 contributors: 20,
+                reverse_dependencies: 10,
+                versions: vec![0, 1],
+                created_at: Default::default(),
+                updated_at: Default::default(),
+                repository: "https://github.com/lhalf/trust-list-rs".to_string(),
+            }
+            .table_entry()
+        )
+    }
+
+    #[test]
+    fn produces_expected_table_line_when_contributors_over_30() {
+        assert_eq!(
+            "|example|100|30+|10|2|01/01/1970|01/01/1970|https://github.com/lhalf/trust-list-rs|\n",
+            Crate {
+                name: "example".to_string(),
+                downloads: 100,
+                contributors: 10000,
                 reverse_dependencies: 10,
                 versions: vec![0, 1],
                 created_at: Default::default(),
