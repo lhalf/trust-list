@@ -112,6 +112,24 @@ mod tests {
     }
 
     #[test]
+    fn crate_produces_expected_table_line() {
+        assert_eq!(
+            "|example|100|20|10|2|01/01/1970|01/01/1970|https://github.com/lhalf/trust-list-rs|\n",
+            Crate {
+                name: "example".to_string(),
+                downloads: 100,
+                contributors: 20,
+                reverse_dependencies: 10,
+                versions: vec![0, 1],
+                created_at: Default::default(),
+                updated_at: Default::default(),
+                repository: "https://github.com/lhalf/trust-list-rs".to_string(),
+            }
+            .table_entry()
+        )
+    }
+
+    #[test]
     fn fails_to_reach_crate_url() {
         let spy = GetRequestSpy::default();
 
