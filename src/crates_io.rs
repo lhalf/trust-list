@@ -95,7 +95,7 @@ fn get_reverse_dependencies(http_client: &impl GetRequest, crate_name: &str) -> 
 
 #[cfg(test)]
 mod tests {
-    use crate::crates_io::{Crate, get_crate_info};
+    use crate::crates_io::{Crate, get_crate_info, get_reverse_dependencies};
     use crate::http_client::GetRequestSpy;
 
     #[test]
@@ -170,6 +170,36 @@ mod tests {
         assert_eq!(
             "failed to deserialize response from: https://crates.io/api/v1/crates/invalid",
             get_crate_info(&spy, "invalid").unwrap_err().to_string()
+        )
+    }
+
+    #[test]
+    fn fails_to_reach_reverse_dependencies_url() {
+        let spy = GetRequestSpy::default();
+
+        spy.get
+            .returns
+            .push_back(Err(anyhow::anyhow!("deliberate test error")));
+
+        assert_eq!(
+            "deliberate test error",
+            get_reverse_dependencies(&spy, "invalid")
+                .unwrap_err()
+                .to_string()
+        )
+    }
+
+    #[test]
+    fn reverse_dependencies_returns_invalid_json() {
+        let spy = GetRequestSpy::default();
+
+        spy.get.returns.push_back(Ok("invalid JSON".to_string()));
+
+        assert_eq!(
+            "failed to deserialize response from: https://crates.io/api/v1/crates/invalid/reverse_dependencies",
+            get_reverse_dependencies(&spy, "invalid")
+                .unwrap_err()
+                .to_string()
         )
     }
 }
