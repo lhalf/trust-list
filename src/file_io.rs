@@ -16,6 +16,7 @@ impl OutputFile {
     }
 }
 
+#[cfg_attr(test, autospy::autospy)]
 pub trait FileIO {
     fn exists(&self) -> bool;
     fn remove(&self);

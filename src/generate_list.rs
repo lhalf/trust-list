@@ -45,3 +45,52 @@ fn parse_existing_crate_names(contents: &str) -> BTreeSet<String> {
         .map(String::from)
         .collect()
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::file_io::FileIOSpy;
+    use crate::generate_list::generate_list;
+    use crate::http_client::GetRequestSpy;
+    use std::collections::BTreeSet;
+
+    #[test]
+    fn output_file_doesnt_exist_and_it_cant_be_created() {
+        let crates = BTreeSet::new();
+        let file_io_spy = FileIOSpy::default();
+        let http_client_spy = GetRequestSpy::default();
+
+        file_io_spy.exists.returns.push_back(false);
+        file_io_spy
+            .create
+            .returns
+            .push_back(Err(anyhow::anyhow!("deliberate test error")));
+
+        assert_eq!(
+            "deliberate test error",
+            generate_list(crates, file_io_spy, http_client_spy)
+                .unwrap_err()
+                .to_string()
+        )
+    }
+
+    #[test]
+    fn output_file_doesnt_exist_is_created_but_cant_be_appended() {
+        let crates = BTreeSet::new();
+        let file_io_spy = FileIOSpy::default();
+        let http_client_spy = GetRequestSpy::default();
+
+        file_io_spy.exists.returns.push_back(false);
+        file_io_spy.create.returns.push_back(Ok(()));
+        file_io_spy
+            .append
+            .returns
+            .push_back(Err(anyhow::anyhow!("deliberate test error")));
+
+        assert_eq!(
+            "deliberate test error",
+            generate_list(crates, file_io_spy, http_client_spy)
+                .unwrap_err()
+                .to_string()
+        )
+    }
+}
