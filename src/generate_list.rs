@@ -93,4 +93,24 @@ mod tests {
                 .to_string()
         )
     }
+
+    #[test]
+    fn output_file_exists_but_cant_be_read() {
+        let crates = BTreeSet::new();
+        let file_io_spy = FileIOSpy::default();
+        let http_client_spy = GetRequestSpy::default();
+
+        file_io_spy.exists.returns.push_back(true);
+        file_io_spy
+            .read_to_string
+            .returns
+            .push_back(Err(anyhow::anyhow!("deliberate test error")));
+
+        assert_eq!(
+            "deliberate test error",
+            generate_list(crates, file_io_spy, http_client_spy)
+                .unwrap_err()
+                .to_string()
+        )
+    }
 }
