@@ -1,0 +1,596 @@
+{
+  "crate": {
+    "id": "autospy",
+    "name": "autospy",
+    "updated_at": "2025-07-01T12:45:04.998603Z",
+    "versions": [
+      1622670,
+      1603361,
+      1594229,
+      1592184,
+      1588757,
+      1588227,
+      1581038,
+      1564965
+    ],
+    "keywords": [
+      "testing",
+      "mock",
+      "fake",
+      "mocking",
+      "spy"
+    ],
+    "categories": [
+      "development-tools::testing"
+    ],
+    "badges": [],
+    "created_at": "2025-05-15T13:17:05.242665Z",
+    "downloads": 1861,
+    "recent_downloads": 1861,
+    "default_version": "0.0.8",
+    "num_versions": 8,
+    "yanked": false,
+    "max_version": "0.0.8",
+    "newest_version": "0.0.8",
+    "max_stable_version": "0.0.8",
+    "description": "A test spy object library.",
+    "homepage": null,
+    "documentation": "https://docs.rs/autospy",
+    "repository": "https://github.com/lhalf/autospy",
+    "links": {
+      "version_downloads": "/api/v1/crates/autospy/downloads",
+      "versions": null,
+      "owners": "/api/v1/crates/autospy/owners",
+      "owner_team": "/api/v1/crates/autospy/owner_team",
+      "owner_user": "/api/v1/crates/autospy/owner_user",
+      "reverse_dependencies": "/api/v1/crates/autospy/reverse_dependencies"
+    },
+    "exact_match": false
+  },
+  "versions": [
+    {
+      "id": 1622670,
+      "crate": "autospy",
+      "num": "0.0.8",
+      "dl_path": "/api/v1/crates/autospy/0.0.8/download",
+      "readme_path": "/api/v1/crates/autospy/0.0.8/readme",
+      "updated_at": "2025-07-01T12:45:04.998603Z",
+      "created_at": "2025-07-01T12:45:04.998603Z",
+      "downloads": 123,
+      "features": {
+        "async": [
+          "dep:async-channel"
+        ],
+        "default": [
+          "test",
+          "async"
+        ],
+        "test": [
+          "autospy_macro/test"
+        ]
+      },
+      "yanked": false,
+      "yank_message": null,
+      "lib_links": null,
+      "license": "MIT",
+      "links": {
+        "dependencies": "/api/v1/crates/autospy/0.0.8/dependencies",
+        "version_downloads": "/api/v1/crates/autospy/0.0.8/downloads",
+        "authors": "/api/v1/crates/autospy/0.0.8/authors"
+      },
+      "crate_size": 23471,
+      "published_by": {
+        "id": 278437,
+        "login": "lhalf",
+        "name": null,
+        "avatar": "https://avatars.githubusercontent.com/u/80602159?v=4",
+        "url": "https://github.com/lhalf"
+      },
+      "audit_actions": [
+        {
+          "action": "publish",
+          "user": {
+            "id": 278437,
+            "login": "lhalf",
+            "name": null,
+            "avatar": "https://avatars.githubusercontent.com/u/80602159?v=4",
+            "url": "https://github.com/lhalf"
+          },
+          "time": "2025-07-01T12:45:04.998603Z"
+        }
+      ],
+      "checksum": "e506dde67ea39630e191a0e871dde19629a6caff49a67d93da03100de0a32f5b",
+      "rust_version": null,
+      "has_lib": true,
+      "bin_names": [],
+      "edition": "2024",
+      "description": "A test spy object library.",
+      "homepage": null,
+      "documentation": "https://docs.rs/autospy",
+      "repository": "https://github.com/lhalf/autospy"
+    },
+    {
+      "id": 1603361,
+      "crate": "autospy",
+      "num": "0.0.7",
+      "dl_path": "/api/v1/crates/autospy/0.0.7/download",
+      "readme_path": "/api/v1/crates/autospy/0.0.7/readme",
+      "updated_at": "2025-06-15T21:55:51.390636Z",
+      "created_at": "2025-06-15T21:55:51.390636Z",
+      "downloads": 205,
+      "features": {
+        "async": [
+          "dep:tokio-retry2"
+        ],
+        "default": [
+          "test",
+          "async"
+        ],
+        "test": [
+          "autospy_macro/test"
+        ]
+      },
+      "yanked": false,
+      "yank_message": null,
+      "lib_links": null,
+      "license": "MIT",
+      "links": {
+        "dependencies": "/api/v1/crates/autospy/0.0.7/dependencies",
+        "version_downloads": "/api/v1/crates/autospy/0.0.7/downloads",
+        "authors": "/api/v1/crates/autospy/0.0.7/authors"
+      },
+      "crate_size": 22687,
+      "published_by": {
+        "id": 278437,
+        "login": "lhalf",
+        "name": null,
+        "avatar": "https://avatars.githubusercontent.com/u/80602159?v=4",
+        "url": "https://github.com/lhalf"
+      },
+      "audit_actions": [
+        {
+          "action": "publish",
+          "user": {
+            "id": 278437,
+            "login": "lhalf",
+            "name": null,
+            "avatar": "https://avatars.githubusercontent.com/u/80602159?v=4",
+            "url": "https://github.com/lhalf"
+          },
+          "time": "2025-06-15T21:55:51.390636Z"
+        }
+      ],
+      "checksum": "a11026f88f1db6a7bed0e6f53307e62223399ec381cb1144c7de1343da294492",
+      "rust_version": null,
+      "has_lib": true,
+      "bin_names": [],
+      "edition": "2024",
+      "description": "A test spy object library.",
+      "homepage": null,
+      "documentation": "https://docs.rs/autospy",
+      "repository": "https://github.com/lhalf/autospy"
+    },
+    {
+      "id": 1594229,
+      "crate": "autospy",
+      "num": "0.0.6",
+      "dl_path": "/api/v1/crates/autospy/0.0.6/download",
+      "readme_path": "/api/v1/crates/autospy/0.0.6/readme",
+      "updated_at": "2025-06-07T22:25:36.335711Z",
+      "created_at": "2025-06-07T22:25:36.335711Z",
+      "downloads": 201,
+      "features": {
+        "async": [
+          "dep:tokio-retry2"
+        ],
+        "default": [
+          "test",
+          "async"
+        ],
+        "test": [
+          "autospy_macro/test"
+        ]
+      },
+      "yanked": false,
+      "yank_message": null,
+      "lib_links": null,
+      "license": "MIT",
+      "links": {
+        "dependencies": "/api/v1/crates/autospy/0.0.6/dependencies",
+        "version_downloads": "/api/v1/crates/autospy/0.0.6/downloads",
+        "authors": "/api/v1/crates/autospy/0.0.6/authors"
+      },
+      "crate_size": 20181,
+      "published_by": {
+        "id": 278437,
+        "login": "lhalf",
+        "name": null,
+        "avatar": "https://avatars.githubusercontent.com/u/80602159?v=4",
+        "url": "https://github.com/lhalf"
+      },
+      "audit_actions": [
+        {
+          "action": "publish",
+          "user": {
+            "id": 278437,
+            "login": "lhalf",
+            "name": null,
+            "avatar": "https://avatars.githubusercontent.com/u/80602159?v=4",
+            "url": "https://github.com/lhalf"
+          },
+          "time": "2025-06-07T22:25:36.335711Z"
+        }
+      ],
+      "checksum": "91b4387da3f51efa92a40eda60554138c7ed0a4ccbfe9057fa0b04f57cc6b63e",
+      "rust_version": null,
+      "has_lib": true,
+      "bin_names": [],
+      "edition": "2024",
+      "description": "A test spy object library.",
+      "homepage": null,
+      "documentation": "https://docs.rs/autospy",
+      "repository": "https://github.com/lhalf/autospy"
+    },
+    {
+      "id": 1592184,
+      "crate": "autospy",
+      "num": "0.0.5",
+      "dl_path": "/api/v1/crates/autospy/0.0.5/download",
+      "readme_path": "/api/v1/crates/autospy/0.0.5/readme",
+      "updated_at": "2025-06-05T21:58:16.795125Z",
+      "created_at": "2025-06-05T21:58:16.795125Z",
+      "downloads": 237,
+      "features": {
+        "async": [
+          "dep:tokio-retry2"
+        ],
+        "default": [
+          "test",
+          "async"
+        ],
+        "test": [
+          "autospy_macro/test"
+        ]
+      },
+      "yanked": false,
+      "yank_message": null,
+      "lib_links": null,
+      "license": "MIT",
+      "links": {
+        "dependencies": "/api/v1/crates/autospy/0.0.5/dependencies",
+        "version_downloads": "/api/v1/crates/autospy/0.0.5/downloads",
+        "authors": "/api/v1/crates/autospy/0.0.5/authors"
+      },
+      "crate_size": 20120,
+      "published_by": {
+        "id": 278437,
+        "login": "lhalf",
+        "name": null,
+        "avatar": "https://avatars.githubusercontent.com/u/80602159?v=4",
+        "url": "https://github.com/lhalf"
+      },
+      "audit_actions": [
+        {
+          "action": "publish",
+          "user": {
+            "id": 278437,
+            "login": "lhalf",
+            "name": null,
+            "avatar": "https://avatars.githubusercontent.com/u/80602159?v=4",
+            "url": "https://github.com/lhalf"
+          },
+          "time": "2025-06-05T21:58:16.795125Z"
+        }
+      ],
+      "checksum": "4d6b168537bc99936092ae7320c3e98aaee1122d951be3359680dc128b1482db",
+      "rust_version": null,
+      "has_lib": true,
+      "bin_names": [],
+      "edition": "2024",
+      "description": "A test spy object library.",
+      "homepage": null,
+      "documentation": "https://docs.rs/autospy",
+      "repository": "https://github.com/lhalf/autospy"
+    },
+    {
+      "id": 1588757,
+      "crate": "autospy",
+      "num": "0.0.4",
+      "dl_path": "/api/v1/crates/autospy/0.0.4/download",
+      "readme_path": "/api/v1/crates/autospy/0.0.4/readme",
+      "updated_at": "2025-06-03T12:37:41.345876Z",
+      "created_at": "2025-06-03T12:37:41.345876Z",
+      "downloads": 236,
+      "features": {
+        "default": [
+          "test"
+        ],
+        "test": [
+          "autospy_macro/test"
+        ]
+      },
+      "yanked": false,
+      "yank_message": null,
+      "lib_links": null,
+      "license": "MIT",
+      "links": {
+        "dependencies": "/api/v1/crates/autospy/0.0.4/dependencies",
+        "version_downloads": "/api/v1/crates/autospy/0.0.4/downloads",
+        "authors": "/api/v1/crates/autospy/0.0.4/authors"
+      },
+      "crate_size": 19541,
+      "published_by": {
+        "id": 278437,
+        "login": "lhalf",
+        "name": null,
+        "avatar": "https://avatars.githubusercontent.com/u/80602159?v=4",
+        "url": "https://github.com/lhalf"
+      },
+      "audit_actions": [
+        {
+          "action": "publish",
+          "user": {
+            "id": 278437,
+            "login": "lhalf",
+            "name": null,
+            "avatar": "https://avatars.githubusercontent.com/u/80602159?v=4",
+            "url": "https://github.com/lhalf"
+          },
+          "time": "2025-06-03T12:37:41.345876Z"
+        }
+      ],
+      "checksum": "ea2f27952e129f0ae630a34393e36be1461ac975051afe4e17061417ce9c089b",
+      "rust_version": null,
+      "has_lib": true,
+      "bin_names": [],
+      "edition": "2024",
+      "description": "A test spy object library.",
+      "homepage": null,
+      "documentation": "https://docs.rs/autospy",
+      "repository": "https://github.com/lhalf/autospy"
+    },
+    {
+      "id": 1588227,
+      "crate": "autospy",
+      "num": "0.0.3",
+      "dl_path": "/api/v1/crates/autospy/0.0.3/download",
+      "readme_path": "/api/v1/crates/autospy/0.0.3/readme",
+      "updated_at": "2025-06-02T21:56:41.348597Z",
+      "created_at": "2025-06-02T21:56:41.348597Z",
+      "downloads": 241,
+      "features": {
+        "default": [
+          "test"
+        ],
+        "test": []
+      },
+      "yanked": false,
+      "yank_message": null,
+      "lib_links": null,
+      "license": "MIT",
+      "links": {
+        "dependencies": "/api/v1/crates/autospy/0.0.3/dependencies",
+        "version_downloads": "/api/v1/crates/autospy/0.0.3/downloads",
+        "authors": "/api/v1/crates/autospy/0.0.3/authors"
+      },
+      "crate_size": 19542,
+      "published_by": {
+        "id": 278437,
+        "login": "lhalf",
+        "name": null,
+        "avatar": "https://avatars.githubusercontent.com/u/80602159?v=4",
+        "url": "https://github.com/lhalf"
+      },
+      "audit_actions": [
+        {
+          "action": "publish",
+          "user": {
+            "id": 278437,
+            "login": "lhalf",
+            "name": null,
+            "avatar": "https://avatars.githubusercontent.com/u/80602159?v=4",
+            "url": "https://github.com/lhalf"
+          },
+          "time": "2025-06-02T21:56:41.348597Z"
+        }
+      ],
+      "checksum": "22a4e33c0ed46c6ca69502f29957dde14dcdee307bc5ecacf9064c5d6365fb70",
+      "rust_version": null,
+      "has_lib": true,
+      "bin_names": [],
+      "edition": "2024",
+      "description": "A test spy object library.",
+      "homepage": null,
+      "documentation": "https://docs.rs/autospy",
+      "repository": "https://github.com/lhalf/autospy"
+    },
+    {
+      "id": 1581038,
+      "crate": "autospy",
+      "num": "0.0.2",
+      "dl_path": "/api/v1/crates/autospy/0.0.2/download",
+      "readme_path": "/api/v1/crates/autospy/0.0.2/readme",
+      "updated_at": "2025-06-02T21:05:35.550587Z",
+      "created_at": "2025-05-27T14:32:11.366351Z",
+      "downloads": 261,
+      "features": {
+      },
+      "yanked": false,
+      "yank_message": null,
+      "lib_links": null,
+      "license": "MIT",
+      "links": {
+        "dependencies": "/api/v1/crates/autospy/0.0.2/dependencies",
+        "version_downloads": "/api/v1/crates/autospy/0.0.2/downloads",
+        "authors": "/api/v1/crates/autospy/0.0.2/authors"
+      },
+      "crate_size": 4015,
+      "published_by": {
+        "id": 278437,
+        "login": "lhalf",
+        "name": null,
+        "avatar": "https://avatars.githubusercontent.com/u/80602159?v=4",
+        "url": "https://github.com/lhalf"
+      },
+      "audit_actions": [
+        {
+          "action": "publish",
+          "user": {
+            "id": 278437,
+            "login": "lhalf",
+            "name": null,
+            "avatar": "https://avatars.githubusercontent.com/u/80602159?v=4",
+            "url": "https://github.com/lhalf"
+          },
+          "time": "2025-05-27T14:32:11.366351Z"
+        },
+        {
+          "action": "yank",
+          "user": {
+            "id": 278437,
+            "login": "lhalf",
+            "name": null,
+            "avatar": "https://avatars.githubusercontent.com/u/80602159?v=4",
+            "url": "https://github.com/lhalf"
+          },
+          "time": "2025-05-27T14:40:17.520211Z"
+        },
+        {
+          "action": "unyank",
+          "user": {
+            "id": 278437,
+            "login": "lhalf",
+            "name": null,
+            "avatar": "https://avatars.githubusercontent.com/u/80602159?v=4",
+            "url": "https://github.com/lhalf"
+          },
+          "time": "2025-06-02T21:05:35.556844Z"
+        }
+      ],
+      "checksum": "52a76972fbc2b60331d6dae4e0894134d970cd772596d85eeb36500c3223fd07",
+      "rust_version": null,
+      "has_lib": true,
+      "bin_names": [],
+      "edition": "2024",
+      "description": "A test spy object library.",
+      "homepage": null,
+      "documentation": null,
+      "repository": "https://github.com/lhalf/autospy"
+    },
+    {
+      "id": 1564965,
+      "crate": "autospy",
+      "num": "0.0.1",
+      "dl_path": "/api/v1/crates/autospy/0.0.1/download",
+      "readme_path": "/api/v1/crates/autospy/0.0.1/readme",
+      "updated_at": "2025-06-02T21:05:34.747786Z",
+      "created_at": "2025-05-15T13:17:05.242665Z",
+      "downloads": 296,
+      "features": {
+      },
+      "yanked": false,
+      "yank_message": null,
+      "lib_links": null,
+      "license": "MIT",
+      "links": {
+        "dependencies": "/api/v1/crates/autospy/0.0.1/dependencies",
+        "version_downloads": "/api/v1/crates/autospy/0.0.1/downloads",
+        "authors": "/api/v1/crates/autospy/0.0.1/authors"
+      },
+      "crate_size": 2703,
+      "published_by": {
+        "id": 278437,
+        "login": "lhalf",
+        "name": null,
+        "avatar": "https://avatars.githubusercontent.com/u/80602159?v=4",
+        "url": "https://github.com/lhalf"
+      },
+      "audit_actions": [
+        {
+          "action": "publish",
+          "user": {
+            "id": 278437,
+            "login": "lhalf",
+            "name": null,
+            "avatar": "https://avatars.githubusercontent.com/u/80602159?v=4",
+            "url": "https://github.com/lhalf"
+          },
+          "time": "2025-05-15T13:17:05.242665Z"
+        },
+        {
+          "action": "yank",
+          "user": {
+            "id": 278437,
+            "login": "lhalf",
+            "name": null,
+            "avatar": "https://avatars.githubusercontent.com/u/80602159?v=4",
+            "url": "https://github.com/lhalf"
+          },
+          "time": "2025-05-27T14:40:19.459268Z"
+        },
+        {
+          "action": "unyank",
+          "user": {
+            "id": 278437,
+            "login": "lhalf",
+            "name": null,
+            "avatar": "https://avatars.githubusercontent.com/u/80602159?v=4",
+            "url": "https://github.com/lhalf"
+          },
+          "time": "2025-06-02T21:05:34.752578Z"
+        }
+      ],
+      "checksum": "9fd617584262b3004279dcb1e8ed50e12a82cc1569b2d6369c757c213081847f",
+      "rust_version": null,
+      "has_lib": true,
+      "bin_names": [],
+      "edition": "2024",
+      "description": "A test spy object library.",
+      "homepage": null,
+      "documentation": null,
+      "repository": "https://github.com/lhalf/autospy"
+    }
+  ],
+  "keywords": [
+    {
+      "id": "testing",
+      "keyword": "testing",
+      "created_at": "2014-11-21T00:20:47.152369Z",
+      "crates_cnt": 756
+    },
+    {
+      "id": "mock",
+      "keyword": "mock",
+      "created_at": "2015-02-26T11:38:00.573973Z",
+      "crates_cnt": 131
+    },
+    {
+      "id": "fake",
+      "keyword": "fake",
+      "created_at": "2016-10-03T13:03:36.525346Z",
+      "crates_cnt": 26
+    },
+    {
+      "id": "mocking",
+      "keyword": "mocking",
+      "created_at": "2017-02-01T23:57:14.305867Z",
+      "crates_cnt": 54
+    },
+    {
+      "id": "spy",
+      "keyword": "spy",
+      "created_at": "2018-06-23T20:01:46.219388Z",
+      "crates_cnt": 6
+    }
+  ],
+  "categories": [
+    {
+      "id": "development-tools::testing",
+      "category": "Testing",
+      "slug": "development-tools::testing",
+      "description": "Crates to help you verify the correctness of your code.",
+      "created_at": "2016-12-30T23:42:37.777395Z",
+      "crates_cnt": 1078
+    }
+  ]
+}

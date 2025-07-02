@@ -11,7 +11,7 @@ pub struct CrateInfo {
     _crate: Crate,
 }
 
-#[derive(Deserialize, Debug, FieldNames)]
+#[derive(Deserialize, Debug, PartialEq, FieldNames)]
 pub struct Crate {
     pub name: String,
     pub downloads: u64,
@@ -103,6 +103,8 @@ fn get_reverse_dependencies(
 mod tests {
     use crate::crates_io::{Crate, get_crate_info, get_reverse_dependencies};
     use crate::http_client::GetRequestSpy;
+    use chrono::DateTime;
+    use std::str::FromStr;
 
     #[test]
     fn produces_expected_table_headings() {
@@ -218,5 +220,34 @@ mod tests {
         ));
 
         assert_eq!(32, get_reverse_dependencies(&spy, "valid").unwrap())
+    }
+
+    #[test]
+    fn valid_crate_info_and_reverse_dependencies() {
+        let spy = GetRequestSpy::default();
+
+        spy.get
+            .returns
+            .push_back(Ok(include_str!("../tests/data/crate_info.json").to_string()));
+
+        spy.get.returns.push_back(Ok(
+            r#"{ "dependencies": [], "versions": [], "meta": { "total": 56 } }"#.to_string(),
+        ));
+
+        assert_eq!(
+            Crate {
+                name: "autospy".to_string(),
+                downloads: 1861,
+                contributors: 0,
+                reverse_dependencies: 56,
+                versions: vec![
+                    1622670, 1603361, 1594229, 1592184, 1588757, 1588227, 1581038, 1564965
+                ],
+                created_at: DateTime::from_str("2025-05-15T13:17:05.242665Z").unwrap(),
+                updated_at: DateTime::from_str("2025-07-01T12:45:04.998603Z").unwrap(),
+                repository: "https://github.com/lhalf/autospy".to_string(),
+            },
+            get_crate_info(&spy, "autospy").unwrap()
+        )
     }
 }
