@@ -10,27 +10,27 @@ mod generate_list;
 mod github;
 mod http_client;
 
-#[derive(Parser)]
-#[command(version, about, long_about = None)]
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
 struct Args {
-    /// The output filename (appended with .md)
+    /// The output filename, appended with .md
     #[arg(short, long, default_value_t = String::from("trust-list"))]
     output_file: String,
 
-    /// Recreate table (appends new dependencies by default)
+    /// Recreate table [default: appends new dependencies]
     #[arg(short, long)]
     recreate: bool,
 
-    /// The depth of dependencies to collect information on (all sub-dependencies by default)
-    #[arg(long)]
+    /// The depth of dependencies to collect information on [default: all sub dependencies]
+    #[arg(short='D', long)]
     depth: Option<u8>,
 
-    /// Include dev dependencies (disabled by default)
-    #[arg(long)]
+    /// Include dev dependencies [default: excluded]
+    #[arg(short, long)]
     dev: bool,
 
-    /// Include build dependencies (disabled by default)
-    #[arg(long)]
+    /// Include build dependencies [default: excluded]
+    #[arg(short, long)]
     build: bool,
 }
 
@@ -51,4 +51,15 @@ fn main() -> anyhow::Result<()> {
     }
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Args;
+
+    #[test]
+    fn verify_cli() {
+        use clap::CommandFactory;
+        Args::command().debug_assert();
+    }
 }
