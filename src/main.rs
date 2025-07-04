@@ -22,7 +22,7 @@ struct Args {
     recreate: bool,
 
     /// The depth of dependencies to collect information on [default: all sub dependencies]
-    #[arg(short='D', long)]
+    #[arg(short = 'D', long)]
     depth: Option<u8>,
 
     /// Include dev dependencies [default: excluded]
