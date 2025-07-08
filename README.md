@@ -8,25 +8,43 @@ Command line tool for generating a trust list from dependencies.
 
 ## Install
 
-`cargo install trust-list`
+```bash
+cargo install trust-list
+```
 
 ## Usage
 
-`trust-list --help`
+```
+$ trust-list --help
+Command line tool for generating dependency information tables in markdown
+
+Usage: 
+
+Options:
+  -o, --output-file <OUTPUT_FILE>  The output filename, appended with .md [default: trust-list]
+  -r, --recreate                   Recreate table [default: appends new dependencies]
+  -D, --depth <DEPTH>              The depth of dependencies to collect information on [default: all sub dependencies]
+  -d, --dev                        Include dev dependencies [default: excluded]
+  -b, --build                      Include build dependencies [default: excluded]
+  -h, --help                       Print help
+  -V, --version                    Print version
+```
 
 ## Example
 
-`trust-list --depth 1`
+```trust-list --depth 1```
 
-| crate      | downloads | contributors | reverse dependencies | releases | created    | last updated | link                                        |
-|------------|-----------|--------------|----------------------|----------|------------|--------------|---------------------------------------------|
-| anyhow     | 262160669 | 23           | 17000                | 97       | 05/10/2019 | 22/12/2024   | https://github.com/dtolnay/anyhow           |
-| chrono     | 232267527 | 30+          | 12555                | 89       | 20/11/2014 | 09/12/2024   | https://github.com/chronotope/chrono        |
-| clap       | 330171079 | 30+          | 19266                | 416      | 01/03/2015 | 05/12/2024   | https://github.com/clap-rs/clap             |
-| itertools  | 339764411 | 30+          | 5699                 | 130      | 21/11/2014 | 31/12/2024   | https://github.com/rust-itertools/itertools |
-| pbr        | 2147945   | 26           | 97                   | 24       | 14/10/2015 | 08/02/2023   | https://github.com/a8m/pb                   |
-| reqwest    | 160886858 | 30+          | 10274                | 103      | 16/10/2016 | 31/12/2024   | https://github.com/seanmonstar/reqwest      |
-| serde      | 426837886 | 30+          | 43946                | 304      | 05/12/2014 | 27/12/2024   | https://github.com/serde-rs/serde           |
-| serde_json | 370649558 | 30+          | 29948                | 166      | 07/08/2015 | 21/12/2024   | https://github.com/serde-rs/json            |
+| name        | downloads | contributors | reverse_dependencies | versions | created_at | updated_at | repository                                  |
+|-------------|-----------|--------------|----------------------|----------|------------|------------|---------------------------------------------|
+| anyhow      | 362002016 | 23           | 20659                | 100      | 05/10/2019 | 14/04/2025 | https://github.com/dtolnay/anyhow           |
+| chrono      | 316018023 | 30+          | 14773                | 91       | 20/11/2014 | 29/04/2025 | https://github.com/chronotope/chrono        |
+| clap        | 454984340 | 30+          | 22719                | 433      | 01/03/2015 | 09/06/2025 | https://github.com/clap-rs/clap             |
+| field_names | 533994    | 1            | 2                    | 3        | 08/01/2021 | 04/01/2022 | https://github.com/TedDriggs/field_names    |
+| itertools   | 537009430 | 30+          | 6515                 | 130      | 21/11/2014 | 31/12/2024 | https://github.com/rust-itertools/itertools |
+| reqwest     | 236309913 | 30+          | 12495                | 113      | 16/10/2016 | 01/07/2025 | https://github.com/seanmonstar/reqwest      |
+| serde       | 426837886 | 30+          | 43946                | 304      | 05/12/2014 | 03/03/2025 | https://github.com/serde-rs/serde           |
+| serde_json  | 497883329 | 30+          | 36095                | 172      | 07/08/2015 | 03/03/2025 | https://github.com/serde-rs/json            |
+
+## Compliance
 
 Restricted to one request per second as per: [crates.io data access policy](https://crates.io/data-access#api)
