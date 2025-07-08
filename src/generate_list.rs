@@ -82,4 +82,80 @@ mod tests {
 
         assert!(generate_list(crates, file_io_spy, http_client_spy).is_ok())
     }
+
+    #[test]
+    fn single_crate_required_get_crate_info_fails() {
+        let crates = BTreeSet::from(["autospy".to_string()]);
+        let file_io_spy = FileIOSpy::default();
+        let http_client_spy = GetRequestSpy::default();
+
+        file_io_spy
+            .read_to_string
+            .returns
+            .push_back(Ok(String::new()));
+
+        http_client_spy
+            .get
+            .returns
+            .push_back(Err(anyhow::anyhow!("deliberate test error")));
+
+        assert!(generate_list(crates, file_io_spy, http_client_spy).is_ok())
+    }
+
+    #[test]
+    fn single_crate_required_get_reverse_dependencies_fails() {
+        let crates = BTreeSet::from(["autospy".to_string()]);
+        let file_io_spy = FileIOSpy::default();
+        let http_client_spy = GetRequestSpy::default();
+
+        file_io_spy
+            .read_to_string
+            .returns
+            .push_back(Ok(String::new()));
+
+        http_client_spy
+            .get
+            .returns
+            .push_back(Ok(include_str!("../tests/data/crate_info.json").to_string()));
+
+        http_client_spy
+            .get
+            .returns
+            .push_back(Err(anyhow::anyhow!("deliberate test error")));
+
+        assert!(generate_list(crates, file_io_spy, http_client_spy).is_ok())
+    }
+
+    #[test]
+    fn single_crate_required_get_contributor_count_fails() {
+        let crates = BTreeSet::from(["autospy".to_string()]);
+        let file_io_spy = FileIOSpy::default();
+        let http_client_spy = GetRequestSpy::default();
+
+        file_io_spy
+            .read_to_string
+            .returns
+            .push_back(Ok(String::new()));
+
+        http_client_spy
+            .get
+            .returns
+            .push_back(Ok(include_str!("../tests/data/crate_info.json").to_string()));
+
+        http_client_spy.get.returns.push_back(Ok(
+            r#"{ "dependencies": [], "versions": [], "meta": { "total": 32 } }"#.to_string(),
+        ));
+
+        http_client_spy
+            .get
+            .returns
+            .push_back(Err(anyhow::anyhow!("deliberate test error")));
+
+        assert_eq!(
+            "deliberate test error",
+            generate_list(crates, file_io_spy, http_client_spy)
+                .unwrap_err()
+                .to_string()
+        )
+    }
 }
