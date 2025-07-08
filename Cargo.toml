@@ -7,8 +7,8 @@ description = "Command line tool for generating dependency information tables in
 keywords = ["trust", "dependencies", "cargo-subcommand", "tool"]
 categories = ["command-line-interface"]
 readme = "README.md"
-homepage = "https://github.com/lhalf/trust-list-rs"
-repository = "https://github.com/lhalf/trust-list-rs"
+homepage = "https://github.com/lhalf/trust-list"
+repository = "https://github.com/lhalf/trust-list"
 exclude = [".gitignore", "justfile", "/.github", "/tests"]
 
 [dependencies]
