@@ -17,7 +17,7 @@ pub fn generate_list(
         match get_crate_info(&http_client, crate_name) {
             Ok(mut crate_info) => {
                 crate_info.contributors =
-                    get_contributor_count(&http_client, &crate_info.repository)?;
+                    get_contributor_count(&http_client, &crate_info.repository).unwrap_or(0);
 
                 output_file.append(crate_info.table_entry().as_bytes())?;
 
@@ -125,9 +125,9 @@ mod tests {
         assert!(generate_list(crates, file_io_spy, http_client_spy).is_ok())
     }
 
-    // TODO: this should probably not fail
     #[test]
-    fn single_crate_required_get_contributor_count_fails() {
+    fn single_crate_required_get_contributor_count_fails_appends_line_with_0_as_contributor_count()
+    {
         let crates = BTreeSet::from(["autospy".to_string()]);
         let file_io_spy = FileIOSpy::default();
         let http_client_spy = GetRequestSpy::default();
@@ -149,11 +149,15 @@ mod tests {
             .returns
             .push_back(Err(anyhow::anyhow!("deliberate test error")));
 
+        file_io_spy.append.returns.push_back(Ok(()));
+
+        assert!(generate_list(crates, file_io_spy.clone(), http_client_spy).is_ok());
         assert_eq!(
-            "deliberate test error",
-            generate_list(crates, file_io_spy, http_client_spy)
-                .unwrap_err()
-                .to_string()
+            vec![
+                b"|autospy|1861|0|32|8|15/05/2025|01/07/2025|https://github.com/lhalf/autospy|\n"
+                    .to_vec()
+            ],
+            file_io_spy.append.arguments.take_all()
         )
     }
 
