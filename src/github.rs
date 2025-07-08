@@ -5,13 +5,12 @@ const API_BASE_URL: &str = "https://api.github.com/repos";
 
 pub fn get_contributor_count(http_client: &impl GetRequest, repo_url: &str) -> Result<u16, Error> {
     let contributors_url = format!(
-        "{}/{}/contributors",
-        API_BASE_URL,
+        "{API_BASE_URL}/{}/contributors",
         sanitise_repo_url(repo_url)?
     );
 
     match serde_json::from_str::<serde_json::Value>(&http_client.get(&contributors_url)?)
-        .with_context(|| format!("failed to deserialize response from: {}", contributors_url))?
+        .with_context(|| format!("failed to deserialize response from: {contributors_url}"))?
         .as_array()
     {
         Some(contributors) => Ok(contributors.len() as u16),

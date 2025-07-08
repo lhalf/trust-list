@@ -13,17 +13,17 @@ impl GetRequest for Client {
         let request = self
             .get(url)
             .build()
-            .with_context(|| format!("failed to build request to: {}", url))?;
+            .with_context(|| format!("failed to build request to: {url}"))?;
 
         let response = self
             .execute(request)
-            .with_context(|| format!("failed to send request to: {}", url))?
+            .with_context(|| format!("failed to send request to: {url}"))?
             .error_for_status()
-            .with_context(|| format!("invalid response from: {}", url))?;
+            .with_context(|| format!("invalid response from: {url}"))?;
 
         response
             .text_with_charset("utf-8")
-            .with_context(|| format!("response from {} contained invalid characters", url))
+            .with_context(|| format!("response from {url} contained invalid characters"))
     }
 }
 

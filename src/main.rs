@@ -47,7 +47,7 @@ fn main() -> anyhow::Result<()> {
     let crates_names = cargo_tree::crate_names(args.depth, args.dev, args.build)?;
 
     if let Err(error) = generate_list(crates_names, output_file, http_client) {
-        panic!("failed to generate trust list: {:?}", error)
+        panic!("failed to generate trust list: {error:?}")
     }
 
     Ok(())

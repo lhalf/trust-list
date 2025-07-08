@@ -71,17 +71,17 @@ pub fn get_crate_info(
     #[cfg(not(test))]
     std::thread::sleep(std::time::Duration::from_secs(1));
 
-    let url = format!("{}/{}", API_URL, &crate_name);
+    let url = format!("{API_URL}/{crate_name}");
 
     let mut crate_info: CrateInfo = serde_json::from_str(&http_client.get(&url)?)
-        .with_context(|| format!("failed to deserialize response from: {}", url))?;
+        .with_context(|| format!("failed to deserialize response from: {url}"))?;
 
     // crates.io treats - and _ the same, set crate name to cargo tree name
     // so when appending we don't get the name again
     crate_info._crate.name = crate_name.to_string();
 
     crate_info._crate.reverse_dependencies = get_reverse_dependencies(http_client, crate_name)
-        .with_context(|| format!("failed to get reverse dependencies for {}", crate_name))?;
+        .with_context(|| format!("failed to get reverse dependencies for {crate_name}"))?;
 
     Ok(crate_info._crate)
 }
@@ -90,11 +90,11 @@ fn get_reverse_dependencies(
     http_client: &impl GetRequest,
     crate_name: &str,
 ) -> Result<u64, anyhow::Error> {
-    let url = format!("{}/{}/reverse_dependencies", API_URL, crate_name);
+    let url = format!("{API_URL}/{crate_name}/reverse_dependencies");
 
     let reverse_dependencies: ReverseDependencies =
         serde_json::from_str(&http_client.get(&url)?)
-            .with_context(|| format!("failed to deserialize response from: {}", url))?;
+            .with_context(|| format!("failed to deserialize response from: {url}"))?;
 
     Ok(reverse_dependencies.meta.total)
 }
