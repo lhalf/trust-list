@@ -1,4 +1,4 @@
-# trust-list-rs
+# trust-list
 
 [![crates.io](https://img.shields.io/crates/v/trust-list)](https://crates.io/crates/trust-list)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/lhalf/trust-list-rs/on_commit.yml)
@@ -32,7 +32,9 @@ Options:
 
 ## Example
 
-```trust-list --depth 1```
+```bash
+trust-list --depth 1
+```
 
 | name        | downloads | contributors | reverse_dependencies | versions | created_at | updated_at | repository                                  |
 |-------------|-----------|--------------|----------------------|----------|------------|------------|---------------------------------------------|
