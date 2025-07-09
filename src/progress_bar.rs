@@ -21,7 +21,7 @@ impl ProgressBar for pbr::ProgressBar<std::io::Stdout> {
 
 pub fn build() -> pbr::ProgressBar<std::io::Stdout> {
     let mut bar = pbr::ProgressBar::new(0);
-    bar.format("¦¦¦");
+    bar.format("╢▌▌░╟");
     bar.show_speed = false;
     bar.show_percent = false;
     bar
