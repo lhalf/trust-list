@@ -1,9 +1,9 @@
 [package]
 name = "trust-list"
-version = "0.1.5"
+version = "0.1.6"
 edition = "2024"
 license = "MIT"
-description = "Command line tool for generating dependency information tables in markdown"
+description = "Command line tool for generating a dependency information table in markdown"
 keywords = ["trust", "dependencies", "cargo-subcommand", "tool"]
 categories = ["command-line-interface"]
 readme = "README.md"
@@ -12,7 +12,7 @@ repository = "https://github.com/lhalf/trust-list"
 exclude = [".gitignore", "justfile", "/.github", "/tests"]
 
 [dependencies]
-clap = { version = "4.5.40", default-features = false, features = ["derive", "std", "help"] }
+clap = { version = "4.5.40", default-features = false, features = ["derive", "std", "help", "usage"] }
 anyhow = { version = "1.0.98", default-features = false }
 itertools = { version = "0.14.0", default-features = false, features = ["use_std"] }
 reqwest = { version = "0.12.20", default-features = false, features = ["blocking", "charset", "default-tls"] }

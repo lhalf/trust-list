@@ -4,7 +4,7 @@
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/lhalf/trust-list/on_commit.yml)
 [![MIT](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
 
-Command line tool for generating a trust list from dependencies.
+Command line tool for generating a dependency information table in markdown.
 
 ## Install
 
@@ -16,9 +16,9 @@ cargo install trust-list
 
 ```
 $ trust-list --help
-Command line tool for generating dependency information tables in markdown
+Command line tool for generating a dependency information table in markdown
 
-Usage: 
+Usage: trust-list [OPTIONS]
 
 Options:
   -o, --output-file <OUTPUT_FILE>  The output filename, appended with .md [default: trust-list]
