@@ -2,31 +2,35 @@ use crate::crates_io::get_crate_info;
 use crate::file_io::FileIO;
 use crate::github::get_contributor_count;
 use crate::http_client::GetRequest;
+use crate::progress_bar::ProgressBar;
 use anyhow::Error;
+use itertools::Itertools;
 use std::collections::BTreeSet;
 
 pub fn generate_list(
     crate_names: BTreeSet<String>,
-    output_file: impl FileIO,
-    http_client: impl GetRequest,
+    output_file: &impl FileIO,
+    http_client: &impl GetRequest,
+    progress_bar: &mut impl ProgressBar,
 ) -> Result<(), Error> {
     let existing_names = parse_existing_crate_names(&output_file.read_to_string()?);
     let missing_names = crate_names.difference(&existing_names);
+    progress_bar.set_total(missing_names.try_len().unwrap_or(0) as u64);
 
     for crate_name in missing_names {
-        match get_crate_info(&http_client, crate_name) {
+        progress_bar.set_message(&format!("{crate_name} "));
+        match get_crate_info(http_client, crate_name) {
             Ok(mut crate_info) => {
                 crate_info.contributors =
-                    get_contributor_count(&http_client, &crate_info.repository).unwrap_or(0);
+                    get_contributor_count(http_client, &crate_info.repository).unwrap_or(0);
 
                 output_file.append(crate_info.table_entry().as_bytes())?;
-
-                println!("{crate_name}");
             }
             Err(error) => {
                 println!("failed to get info for {crate_name}: {error}");
             }
         }
+        progress_bar.increment();
     }
 
     Ok(())
@@ -48,6 +52,7 @@ mod tests {
     use crate::file_io::FileIOSpy;
     use crate::generate_list::generate_list;
     use crate::http_client::GetRequestSpy;
+    use crate::progress_bar::ProgressBarSpy;
     use std::collections::BTreeSet;
 
     #[test]
@@ -55,6 +60,7 @@ mod tests {
         let crates = BTreeSet::new();
         let file_io_spy = FileIOSpy::default();
         let http_client_spy = GetRequestSpy::default();
+        let mut progress_bar_spy = ProgressBarSpy::default();
 
         file_io_spy
             .read_to_string
@@ -63,9 +69,14 @@ mod tests {
 
         assert_eq!(
             "deliberate test error",
-            generate_list(crates, file_io_spy, http_client_spy)
-                .unwrap_err()
-                .to_string()
+            generate_list(
+                crates,
+                &file_io_spy,
+                &http_client_spy,
+                &mut progress_bar_spy
+            )
+            .unwrap_err()
+            .to_string()
         )
     }
 
@@ -74,13 +85,24 @@ mod tests {
         let crates = BTreeSet::new();
         let file_io_spy = FileIOSpy::default();
         let http_client_spy = GetRequestSpy::default();
+        let mut progress_bar_spy = ProgressBarSpy::default();
 
         file_io_spy
             .read_to_string
             .returns
             .push_back(Ok(String::new()));
 
-        assert!(generate_list(crates, file_io_spy, http_client_spy).is_ok())
+        progress_bar_spy.set_total.returns.push_back(());
+
+        assert!(
+            generate_list(
+                crates,
+                &file_io_spy,
+                &http_client_spy,
+                &mut progress_bar_spy
+            )
+            .is_ok()
+        )
     }
 
     #[test]
@@ -88,18 +110,32 @@ mod tests {
         let crates = BTreeSet::from(["autospy".to_string()]);
         let file_io_spy = FileIOSpy::default();
         let http_client_spy = GetRequestSpy::default();
+        let mut progress_bar_spy = ProgressBarSpy::default();
 
         file_io_spy
             .read_to_string
             .returns
             .push_back(Ok(String::new()));
 
+        progress_bar_spy.set_total.returns.push_back(());
+        progress_bar_spy.set_message.returns.push_back(());
+
         http_client_spy
             .get
             .returns
             .push_back(Err(anyhow::anyhow!("deliberate test error")));
 
-        assert!(generate_list(crates, file_io_spy, http_client_spy).is_ok())
+        progress_bar_spy.increment.returns.push_back(());
+
+        assert!(
+            generate_list(
+                crates,
+                &file_io_spy,
+                &http_client_spy,
+                &mut progress_bar_spy
+            )
+            .is_ok()
+        )
     }
 
     #[test]
@@ -107,11 +143,15 @@ mod tests {
         let crates = BTreeSet::from(["autospy".to_string()]);
         let file_io_spy = FileIOSpy::default();
         let http_client_spy = GetRequestSpy::default();
+        let mut progress_bar_spy = ProgressBarSpy::default();
 
         file_io_spy
             .read_to_string
             .returns
             .push_back(Ok(String::new()));
+
+        progress_bar_spy.set_total.returns.push_back(());
+        progress_bar_spy.set_message.returns.push_back(());
 
         http_client_spy
             .get
@@ -122,7 +162,17 @@ mod tests {
             .returns
             .push_back(Err(anyhow::anyhow!("deliberate test error")));
 
-        assert!(generate_list(crates, file_io_spy, http_client_spy).is_ok())
+        progress_bar_spy.increment.returns.push_back(());
+
+        assert!(
+            generate_list(
+                crates,
+                &file_io_spy,
+                &http_client_spy,
+                &mut progress_bar_spy
+            )
+            .is_ok()
+        )
     }
 
     #[test]
@@ -131,11 +181,15 @@ mod tests {
         let crates = BTreeSet::from(["autospy".to_string()]);
         let file_io_spy = FileIOSpy::default();
         let http_client_spy = GetRequestSpy::default();
+        let mut progress_bar_spy = ProgressBarSpy::default();
 
         file_io_spy
             .read_to_string
             .returns
             .push_back(Ok(String::new()));
+
+        progress_bar_spy.set_total.returns.push_back(());
+        progress_bar_spy.set_message.returns.push_back(());
 
         http_client_spy
             .get
@@ -151,7 +205,17 @@ mod tests {
 
         file_io_spy.append.returns.push_back(Ok(()));
 
-        assert!(generate_list(crates, file_io_spy.clone(), http_client_spy).is_ok());
+        progress_bar_spy.increment.returns.push_back(());
+
+        assert!(
+            generate_list(
+                crates,
+                &file_io_spy.clone(),
+                &http_client_spy,
+                &mut progress_bar_spy
+            )
+            .is_ok()
+        );
         assert_eq!(
             vec![
                 b"|autospy|1861|0|32|8|15/05/2025|01/07/2025|https://github.com/lhalf/autospy|\n"
@@ -166,11 +230,15 @@ mod tests {
         let crates = BTreeSet::from(["autospy".to_string()]);
         let file_io_spy = FileIOSpy::default();
         let http_client_spy = GetRequestSpy::default();
+        let mut progress_bar_spy = ProgressBarSpy::default();
 
         file_io_spy
             .read_to_string
             .returns
             .push_back(Ok(String::new()));
+
+        progress_bar_spy.set_total.returns.push_back(());
+        progress_bar_spy.set_message.returns.push_back(());
 
         http_client_spy
             .get
@@ -191,9 +259,14 @@ mod tests {
 
         assert_eq!(
             "deliberate test error",
-            generate_list(crates, file_io_spy, http_client_spy)
-                .unwrap_err()
-                .to_string()
+            generate_list(
+                crates,
+                &file_io_spy,
+                &http_client_spy,
+                &mut progress_bar_spy
+            )
+            .unwrap_err()
+            .to_string()
         )
     }
 
@@ -202,11 +275,15 @@ mod tests {
         let crates = BTreeSet::from(["autospy".to_string()]);
         let file_io_spy = FileIOSpy::default();
         let http_client_spy = GetRequestSpy::default();
+        let mut progress_bar_spy = ProgressBarSpy::default();
 
         file_io_spy
             .read_to_string
             .returns
             .push_back(Ok(String::new()));
+
+        progress_bar_spy.set_total.returns.push_back(());
+        progress_bar_spy.set_message.returns.push_back(());
 
         http_client_spy
             .get
@@ -222,7 +299,17 @@ mod tests {
 
         file_io_spy.append.returns.push_back(Ok(()));
 
-        assert!(generate_list(crates, file_io_spy.clone(), http_client_spy).is_ok());
+        progress_bar_spy.increment.returns.push_back(());
+
+        assert!(
+            generate_list(
+                crates,
+                &file_io_spy.clone(),
+                &http_client_spy,
+                &mut progress_bar_spy
+            )
+            .is_ok()
+        );
         assert_eq!(
             vec![
                 b"|autospy|1861|5|32|8|15/05/2025|01/07/2025|https://github.com/lhalf/autospy|\n"

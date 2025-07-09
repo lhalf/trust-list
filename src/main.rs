@@ -9,6 +9,7 @@ mod file_io;
 mod generate_list;
 mod github;
 mod http_client;
+mod progress_bar;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -46,9 +47,13 @@ fn main() -> anyhow::Result<()> {
 
     let crates_names = cargo_tree::crate_names(args.depth, args.dev, args.build)?;
 
-    if let Err(error) = generate_list(crates_names, output_file, http_client) {
+    let mut progress_bar = progress_bar::build();
+
+    if let Err(error) = generate_list(crates_names, &output_file, &http_client, &mut progress_bar) {
         panic!("failed to generate trust list: {error:?}")
     }
+
+    progress_bar.finish_print(output_file.path.to_str().unwrap_or_default());
 
     Ok(())
 }
