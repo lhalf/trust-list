@@ -1,7 +1,7 @@
 set shell := ["bash", "-euc"]
 
 build:
-    cargo build --locked
+    cargo build --locked --release
 
 check:
     cargo fmt --check --all
