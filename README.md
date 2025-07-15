@@ -26,6 +26,7 @@ Options:
   -D, --depth <DEPTH>              The depth of dependencies to collect information on [default: all sub dependencies]
   -d, --dev                        Include dev dependencies [default: excluded]
   -b, --build                      Include build dependencies [default: excluded]
+  -e, --exclude <EXCLUDE>          Exclude specified workspace [default: all included]
   -h, --help                       Print help
   -V, --version                    Print version
 ```

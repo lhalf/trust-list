@@ -33,6 +33,10 @@ struct Args {
     /// Include build dependencies [default: excluded]
     #[arg(short, long)]
     build: bool,
+
+    /// Exclude specified workspace [default: all included]
+    #[arg(short, long)]
+    exclude: Vec<String>,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -45,7 +49,7 @@ fn main() -> anyhow::Result<()> {
 
     let http_client = http_client::build()?;
 
-    let crates_names = cargo_tree::crate_names(args.depth, args.dev, args.build)?;
+    let crates_names = cargo_tree::crate_names(args.depth, args.dev, args.build, args.exclude)?;
 
     let mut progress_bar = progress_bar::build();
 

@@ -8,12 +8,14 @@ pub fn crate_names(
     depth: Option<u8>,
     include_dev_dependencies: bool,
     include_build_dependencies: bool,
+    excluded_workspaces: Vec<String>,
 ) -> anyhow::Result<BTreeSet<String>> {
     let output = Command::new("cargo")
         .args(args(
             depth,
             include_dev_dependencies,
             include_build_dependencies,
+            excluded_workspaces,
         ))
         .output()
         .context("failed to call cargo tree")?;
@@ -24,6 +26,7 @@ fn args(
     depth: Option<u8>,
     include_dev_dependencies: bool,
     include_build_dependencies: bool,
+    excluded_workspaces: Vec<String>,
 ) -> Vec<String> {
     let mut args = vec![
         "tree".to_string(),
@@ -50,6 +53,14 @@ fn args(
         args.push("--depth".to_string());
         args.push(depth.to_string());
     }
+
+    if !excluded_workspaces.is_empty() {
+        args.push("--workspace".to_string());
+        excluded_workspaces.into_iter().for_each(|workspace| {
+            args.push("--exclude".to_string());
+            args.push(workspace);
+        });
+    };
 
     args
 }
@@ -89,7 +100,10 @@ mod test {
             "serde".to_string(),
             "serde_json".to_string(),
         ]);
-        assert_eq!(expected_crates, crate_names(Some(1), false, false).unwrap());
+        assert_eq!(
+            expected_crates,
+            crate_names(Some(1), false, false, Vec::new()).unwrap()
+        );
     }
 
     #[test]
@@ -107,6 +121,29 @@ mod test {
             "serde".to_string(),
             "serde_json".to_string(),
         ]);
-        assert_eq!(expected_crates, crate_names(Some(1), true, false).unwrap());
+        assert_eq!(
+            expected_crates,
+            crate_names(Some(1), true, false, Vec::new()).unwrap()
+        );
+    }
+
+    #[test]
+    fn cargo_tree_ignores_invalid_excluded_workspaces() {
+        // could get this from cargo.toml?
+        let expected_crates = BTreeSet::from([
+            "anyhow".to_string(),
+            "chrono".to_string(),
+            "clap".to_string(),
+            "field_names".to_string(),
+            "itertools".to_string(),
+            "pbr".to_string(),
+            "reqwest".to_string(),
+            "serde".to_string(),
+            "serde_json".to_string(),
+        ]);
+        assert_eq!(
+            expected_crates,
+            crate_names(Some(1), false, false, vec!["invalid".to_string()]).unwrap()
+        );
     }
 }
