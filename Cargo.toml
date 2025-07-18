@@ -3,11 +3,9 @@ name = "trust-list"
 version = "0.1.6"
 edition = "2024"
 license = "MIT"
-description = "Command line tool for generating a dependency information table in markdown"
+description = "Command line tool for generating a dependency information table in markdown."
 keywords = ["trust", "dependencies", "cargo-subcommand", "tool"]
 categories = ["command-line-interface"]
-readme = "README.md"
-homepage = "https://github.com/lhalf/trust-list"
 repository = "https://github.com/lhalf/trust-list"
 exclude = [".gitignore", "justfile", "/.github", "/tests"]
 
