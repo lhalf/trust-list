@@ -49,7 +49,7 @@ mod tests {
 
         spy.get
             .returns
-            .push_back(Err(anyhow::anyhow!("deliberate test error")));
+            .set([Err(anyhow::anyhow!("deliberate test error"))]);
 
         assert_eq!(
             "deliberate test error",
@@ -63,7 +63,7 @@ mod tests {
     fn contributor_url_returns_invalid_json() {
         let spy = GetRequestSpy::default();
 
-        spy.get.returns.push_back(Ok("invalid JSON".to_string()));
+        spy.get.returns.set([Ok("invalid JSON".to_string())]);
 
         assert_eq!(
             "failed to deserialize response from: https://api.github.com/repos/invalid/json/contributors",
@@ -77,9 +77,9 @@ mod tests {
     fn contributor_url_returning_non_array_json_returns_0_contributors() {
         let spy = GetRequestSpy::default();
 
-        spy.get.returns.push_back(Ok(
+        spy.get.returns.set([Ok(
             r#"{"not_array": 10, "actually_object": 100}"#.to_string()
-        ));
+        )]);
 
         assert_eq!(
             0,
@@ -91,7 +91,7 @@ mod tests {
     fn contributor_url_returning_valid_json_array() {
         let spy = GetRequestSpy::default();
 
-        spy.get.returns.push_back(Ok(r#"[1,2,3,4,5]"#.to_string()));
+        spy.get.returns.set([Ok(r#"[1,2,3,4,5]"#.to_string())]);
 
         assert_eq!(
             5,
@@ -103,7 +103,7 @@ mod tests {
     fn contributor_url_ending_with_git_returning_valid_json_array() {
         let spy = GetRequestSpy::default();
 
-        spy.get.returns.push_back(Ok(r#"[1,2]"#.to_string()));
+        spy.get.returns.set([Ok(r#"[1,2]"#.to_string())]);
 
         assert_eq!(
             2,
@@ -115,7 +115,7 @@ mod tests {
     fn contributor_url_ending_with_slash_returning_valid_json_array() {
         let spy = GetRequestSpy::default();
 
-        spy.get.returns.push_back(Ok(r#"[1,2,3]"#.to_string()));
+        spy.get.returns.set([Ok(r#"[1,2,3]"#.to_string())]);
 
         assert_eq!(
             3,

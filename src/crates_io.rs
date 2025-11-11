@@ -161,7 +161,7 @@ mod tests {
 
         spy.get
             .returns
-            .push_back(Err(anyhow::anyhow!("deliberate test error")));
+            .set([Err(anyhow::anyhow!("deliberate test error"))]);
 
         assert_eq!(
             "deliberate test error",
@@ -173,7 +173,7 @@ mod tests {
     fn crate_url_returns_invalid_json() {
         let spy = GetRequestSpy::default();
 
-        spy.get.returns.push_back(Ok("invalid JSON".to_string()));
+        spy.get.returns.set([Ok("invalid JSON".to_string())]);
 
         assert_eq!(
             "failed to deserialize response from: https://crates.io/api/v1/crates/invalid",
@@ -187,7 +187,7 @@ mod tests {
 
         spy.get
             .returns
-            .push_back(Err(anyhow::anyhow!("deliberate test error")));
+            .set([Err(anyhow::anyhow!("deliberate test error"))]);
 
         assert_eq!(
             "deliberate test error",
@@ -201,7 +201,7 @@ mod tests {
     fn reverse_dependencies_returns_invalid_json() {
         let spy = GetRequestSpy::default();
 
-        spy.get.returns.push_back(Ok("invalid JSON".to_string()));
+        spy.get.returns.set([Ok("invalid JSON".to_string())]);
 
         assert_eq!(
             "failed to deserialize response from: https://crates.io/api/v1/crates/invalid/reverse_dependencies",
@@ -215,9 +215,9 @@ mod tests {
     fn reverse_dependencies_returns_valid_json() {
         let spy = GetRequestSpy::default();
 
-        spy.get.returns.push_back(Ok(
+        spy.get.returns.set([Ok(
             r#"{ "dependencies": [], "versions": [], "meta": { "total": 32 } }"#.to_string(),
-        ));
+        )]);
 
         assert_eq!(32, get_reverse_dependencies(&spy, "valid").unwrap())
     }
@@ -226,13 +226,10 @@ mod tests {
     fn valid_crate_info_and_reverse_dependencies() {
         let spy = GetRequestSpy::default();
 
-        spy.get
-            .returns
-            .push_back(Ok(include_str!("../tests/data/crate_info.json").to_string()));
-
-        spy.get.returns.push_back(Ok(
-            r#"{ "dependencies": [], "versions": [], "meta": { "total": 56 } }"#.to_string(),
-        ));
+        spy.get.returns.set([
+            Ok(include_str!("../tests/data/crate_info.json").to_string()),
+            Ok(r#"{ "dependencies": [], "versions": [], "meta": { "total": 56 } }"#.to_string()),
+        ]);
 
         assert_eq!(
             Crate {

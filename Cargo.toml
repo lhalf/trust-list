@@ -21,4 +21,4 @@ field_names = { version = "0.2.0", default-features = false }
 pbr = { version = "1.1.1", default-features = false }
 
 [dev-dependencies]
-autospy = { version = "0.0.8", default-features = false, features = ["test"] }
+autospy = { version = "1.4.0", default-features = false, features = ["test"] }

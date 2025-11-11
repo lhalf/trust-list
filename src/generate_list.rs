@@ -65,7 +65,7 @@ mod tests {
         file_io_spy
             .read_to_string
             .returns
-            .push_back(Err(anyhow::anyhow!("deliberate test error")));
+            .set([Err(anyhow::anyhow!("deliberate test error"))]);
 
         assert_eq!(
             "deliberate test error",
@@ -87,12 +87,9 @@ mod tests {
         let http_client_spy = GetRequestSpy::default();
         let mut progress_bar_spy = ProgressBarSpy::default();
 
-        file_io_spy
-            .read_to_string
-            .returns
-            .push_back(Ok(String::new()));
+        file_io_spy.read_to_string.returns.set([Ok(String::new())]);
 
-        progress_bar_spy.set_total.returns.push_back(());
+        progress_bar_spy.set_total.returns.set([()]);
 
         assert!(
             generate_list(
@@ -112,20 +109,17 @@ mod tests {
         let http_client_spy = GetRequestSpy::default();
         let mut progress_bar_spy = ProgressBarSpy::default();
 
-        file_io_spy
-            .read_to_string
-            .returns
-            .push_back(Ok(String::new()));
+        file_io_spy.read_to_string.returns.set([Ok(String::new())]);
 
-        progress_bar_spy.set_total.returns.push_back(());
-        progress_bar_spy.set_message.returns.push_back(());
+        progress_bar_spy.set_total.returns.set([()]);
+        progress_bar_spy.set_message.returns.set([()]);
 
         http_client_spy
             .get
             .returns
-            .push_back(Err(anyhow::anyhow!("deliberate test error")));
+            .set([Err(anyhow::anyhow!("deliberate test error"))]);
 
-        progress_bar_spy.increment.returns.push_back(());
+        progress_bar_spy.increment.returns.set([()]);
 
         assert!(
             generate_list(
@@ -145,24 +139,17 @@ mod tests {
         let http_client_spy = GetRequestSpy::default();
         let mut progress_bar_spy = ProgressBarSpy::default();
 
-        file_io_spy
-            .read_to_string
-            .returns
-            .push_back(Ok(String::new()));
+        file_io_spy.read_to_string.returns.set([Ok(String::new())]);
 
-        progress_bar_spy.set_total.returns.push_back(());
-        progress_bar_spy.set_message.returns.push_back(());
+        progress_bar_spy.set_total.returns.set([()]);
+        progress_bar_spy.set_message.returns.set([()]);
 
-        http_client_spy
-            .get
-            .returns
-            .push_back(Ok(include_str!("../tests/data/crate_info.json").to_string()));
-        http_client_spy
-            .get
-            .returns
-            .push_back(Err(anyhow::anyhow!("deliberate test error")));
+        http_client_spy.get.returns.set([
+            Ok(include_str!("../tests/data/crate_info.json").to_string()),
+            Err(anyhow::anyhow!("deliberate test error")),
+        ]);
 
-        progress_bar_spy.increment.returns.push_back(());
+        progress_bar_spy.increment.returns.set([()]);
 
         assert!(
             generate_list(
@@ -183,29 +170,20 @@ mod tests {
         let http_client_spy = GetRequestSpy::default();
         let mut progress_bar_spy = ProgressBarSpy::default();
 
-        file_io_spy
-            .read_to_string
-            .returns
-            .push_back(Ok(String::new()));
+        file_io_spy.read_to_string.returns.set([Ok(String::new())]);
 
-        progress_bar_spy.set_total.returns.push_back(());
-        progress_bar_spy.set_message.returns.push_back(());
+        progress_bar_spy.set_total.returns.set([()]);
+        progress_bar_spy.set_message.returns.set([()]);
 
-        http_client_spy
-            .get
-            .returns
-            .push_back(Ok(include_str!("../tests/data/crate_info.json").to_string()));
-        http_client_spy.get.returns.push_back(Ok(
-            r#"{ "dependencies": [], "versions": [], "meta": { "total": 32 } }"#.to_string(),
-        ));
-        http_client_spy
-            .get
-            .returns
-            .push_back(Err(anyhow::anyhow!("deliberate test error")));
+        http_client_spy.get.returns.set([
+            Ok(include_str!("../tests/data/crate_info.json").to_string()),
+            Ok(r#"{ "dependencies": [], "versions": [], "meta": { "total": 32 } }"#.to_string()),
+            Err(anyhow::anyhow!("deliberate test error")),
+        ]);
 
-        file_io_spy.append.returns.push_back(Ok(()));
+        file_io_spy.append.returns.set([Ok(())]);
 
-        progress_bar_spy.increment.returns.push_back(());
+        progress_bar_spy.increment.returns.set([()]);
 
         assert!(
             generate_list(
@@ -217,11 +195,11 @@ mod tests {
             .is_ok()
         );
         assert_eq!(
-            vec![
+            [
                 b"|autospy|1861|0|32|8|15/05/2025|01/07/2025|https://github.com/lhalf/autospy|\n"
                     .to_vec()
             ],
-            file_io_spy.append.arguments.take_all()
+            file_io_spy.append.arguments
         )
     }
 
@@ -232,30 +210,21 @@ mod tests {
         let http_client_spy = GetRequestSpy::default();
         let mut progress_bar_spy = ProgressBarSpy::default();
 
-        file_io_spy
-            .read_to_string
-            .returns
-            .push_back(Ok(String::new()));
+        file_io_spy.read_to_string.returns.set([Ok(String::new())]);
 
-        progress_bar_spy.set_total.returns.push_back(());
-        progress_bar_spy.set_message.returns.push_back(());
+        progress_bar_spy.set_total.returns.set([()]);
+        progress_bar_spy.set_message.returns.set([()]);
 
-        http_client_spy
-            .get
-            .returns
-            .push_back(Ok(include_str!("../tests/data/crate_info.json").to_string()));
-        http_client_spy.get.returns.push_back(Ok(
-            r#"{ "dependencies": [], "versions": [], "meta": { "total": 32 } }"#.to_string(),
-        ));
-        http_client_spy
-            .get
-            .returns
-            .push_back(Ok(r#"[1,2,3,4,5]"#.to_string()));
+        http_client_spy.get.returns.set([
+            Ok(include_str!("../tests/data/crate_info.json").to_string()),
+            Ok(r#"{ "dependencies": [], "versions": [], "meta": { "total": 32 } }"#.to_string()),
+            Ok(r#"[1,2,3,4,5]"#.to_string()),
+        ]);
 
         file_io_spy
             .append
             .returns
-            .push_back(Err(anyhow::anyhow!("deliberate test error")));
+            .set([Err(anyhow::anyhow!("deliberate test error"))]);
 
         assert_eq!(
             "deliberate test error",
@@ -277,29 +246,20 @@ mod tests {
         let http_client_spy = GetRequestSpy::default();
         let mut progress_bar_spy = ProgressBarSpy::default();
 
-        file_io_spy
-            .read_to_string
-            .returns
-            .push_back(Ok(String::new()));
+        file_io_spy.read_to_string.returns.set([Ok(String::new())]);
 
-        progress_bar_spy.set_total.returns.push_back(());
-        progress_bar_spy.set_message.returns.push_back(());
+        progress_bar_spy.set_total.returns.set([()]);
+        progress_bar_spy.set_message.returns.set([()]);
 
-        http_client_spy
-            .get
-            .returns
-            .push_back(Ok(include_str!("../tests/data/crate_info.json").to_string()));
-        http_client_spy.get.returns.push_back(Ok(
-            r#"{ "dependencies": [], "versions": [], "meta": { "total": 32 } }"#.to_string(),
-        ));
-        http_client_spy
-            .get
-            .returns
-            .push_back(Ok(r#"[1,2,3,4,5]"#.to_string()));
+        http_client_spy.get.returns.set([
+            Ok(include_str!("../tests/data/crate_info.json").to_string()),
+            Ok(r#"{ "dependencies": [], "versions": [], "meta": { "total": 32 } }"#.to_string()),
+            Ok(r#"[1,2,3,4,5]"#.to_string()),
+        ]);
 
-        file_io_spy.append.returns.push_back(Ok(()));
+        file_io_spy.append.returns.set([Ok(())]);
 
-        progress_bar_spy.increment.returns.push_back(());
+        progress_bar_spy.increment.returns.set([()]);
 
         assert!(
             generate_list(
@@ -311,11 +271,11 @@ mod tests {
             .is_ok()
         );
         assert_eq!(
-            vec![
+            [
                 b"|autospy|1861|5|32|8|15/05/2025|01/07/2025|https://github.com/lhalf/autospy|\n"
                     .to_vec()
             ],
-            file_io_spy.append.arguments.take_all()
+            file_io_spy.append.arguments
         )
     }
 }

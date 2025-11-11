@@ -37,9 +37,9 @@ checksum = "c08606f8c3cbf4ce6ec8e28fb0014a2c086708fe954eaa885384a6165172e7e8"
 
 [[package]]
 name = "autospy"
-version = "0.0.8"
+version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e506dde67ea39630e191a0e871dde19629a6caff49a67d93da03100de0a32f5b"
+checksum = "36374f0bc378af4e1145d7e0ac4aae7852c8c10c6c161101346e99a904988cbd"
 dependencies = [
  "autospy_macro",
  "const-default",
@@ -47,9 +47,9 @@ dependencies = [
 
 [[package]]
 name = "autospy_macro"
-version = "0.0.8"
+version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f6298001538cfe854a1ad9f79cd884e008aeeb10be4171050bd3ca5b6a8dd513"
+checksum = "26306d38b8be6374204fdbac06ddd0d84aa8602358816d8309baa3d6e598b7c7"
 dependencies = [
  "proc-macro2",
  "quote",
