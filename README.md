@@ -39,15 +39,15 @@ trust-list --depth 1
 
 | name        | downloads | contributors | reverse_dependencies | versions | created_at | updated_at | repository                                  |
 |-------------|-----------|--------------|----------------------|----------|------------|------------|---------------------------------------------|
-| anyhow      | 362544609 | 23           | 20676                | 100      | 05/10/2019 | 14/04/2025 | https://github.com/dtolnay/anyhow           |
-| chrono      | 316490120 | 30+          | 14785                | 91       | 20/11/2014 | 29/04/2025 | https://github.com/chronotope/chrono        |
-| clap        | 455668951 | 30+          | 22736                | 433      | 01/03/2015 | 09/06/2025 | https://github.com/clap-rs/clap             |
-| field_names | 534190    | 1            | 2                    | 3        | 08/01/2021 | 04/01/2022 | https://github.com/TedDriggs/field_names    |
-| itertools   | 538150803 | 30+          | 6517                 | 130      | 21/11/2014 | 31/12/2024 | https://github.com/rust-itertools/itertools |
-| pbr         | 2573309   | 26           | 102                  | 24       | 14/10/2015 | 08/02/2023 | https://github.com/a8m/pb                   |
-| reqwest     | 236786443 | 30+          | 12502                | 113      | 16/10/2016 | 01/07/2025 | https://github.com/seanmonstar/reqwest      |
-| serde       | 572302147 | 30+          | 52086                | 306      | 05/12/2014 | 09/03/2025 | https://github.com/serde-rs/serde           |
-| serde_json  | 498510973 | 30+          | 36117                | 172      | 07/08/2015 | 03/03/2025 | https://github.com/serde-rs/json            |
+| anyhow      | 455074655 | 24           | 24558                | 102      | 05/10/2019 | 19/09/2025 | https://github.com/dtolnay/anyhow           |
+| chrono      | 393631079 | 30+          | 17491                | 92       | 20/11/2014 | 08/09/2025 | https://github.com/chronotope/chrono        |
+| clap        | 564552921 | 30+          | 25926                | 444      | 01/03/2015 | 29/10/2025 | https://github.com/clap-rs/clap             |
+| field_names | 556548    | 1            | 3                    | 3        | 08/01/2021 | 04/01/2022 | https://github.com/TedDriggs/field_names    |
+| itertools   | 701399480 | 30+          | 7038                 | 130      | 21/11/2014 | 31/12/2024 | https://github.com/rust-itertools/itertools |
+| pbr         | 2835208   | 26           | 105                  | 24       | 14/10/2015 | 08/02/2023 | https://github.com/a8m/pb                   |
+| reqwest     | 307663439 | 30+          | 14612                | 115      | 16/10/2016 | 13/10/2025 | https://github.com/seanmonstar/reqwest      |
+| serde       | 701667189 | 30+          | 59544                | 315      | 05/12/2014 | 27/09/2025 | https://github.com/serde-rs/serde           |
+| serde_json  | 616227930 | 30+          | 41960                | 177      | 07/08/2015 | 14/09/2025 | https://github.com/serde-rs/json            |
 
 ## Compliance
 
