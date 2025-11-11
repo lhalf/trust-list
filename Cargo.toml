@@ -13,10 +13,10 @@ exclude = [".gitignore", "justfile", "/.github", "/tests"]
 clap = { version = "4.5.40", default-features = false, features = ["derive", "std", "help", "usage"] }
 anyhow = { version = "1.0.98", default-features = false }
 itertools = { version = "0.14.0", default-features = false, features = ["use_std"] }
-reqwest = { version = "0.12.20", default-features = false, features = ["blocking", "charset", "default-tls"] }
+reqwest = { version = "0.12.22", default-features = false, features = ["blocking", "charset", "default-tls"] }
 serde_json = { version = "1.0.140", default-features = false, features = ["std"] }
-serde = { version = "1.0.217", default-features = false, features = ["derive"] }
-chrono = { version = "0.4.39", default-features = false, features = ["serde", "std"] }
+serde = { version = "1.0.219", default-features = false, features = ["derive"] }
+chrono = { version = "0.4.41", default-features = false, features = ["serde", "std"] }
 field_names = { version = "0.2.0", default-features = false }
 pbr = { version = "1.1.1", default-features = false }
 
