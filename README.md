@@ -51,4 +51,4 @@ trust-list --depth 1
 
 ## Compliance
 
-Restricted to one request per second as per: [crates.io data access policy](https://crates.io/data-access#api)
+Restricted to one request per second as per [crates.io data access policy](https://crates.io/data-access#api).
